@@ -1,5 +1,5 @@
-import Skills from "./component/sections/Skills";
-import Hero from "./component/sections/Hero";
+import Skills from "./hero/Skills";
+import Hero from "./hero/Hero";
 
 export default function HomePage() {
   return (

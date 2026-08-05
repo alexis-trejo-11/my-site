@@ -1,0 +1,413 @@
+<!doctype html>
+
+<html class="dark" lang="en" style="color-scheme: dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Contact - Neon Nocturne Portfolio</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Configuration -->
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary-fixed": "#290350",
+              tertiary: "#a3e09f",
+              "secondary-fixed": "#9cefff",
+              "on-secondary": "#00363d",
+              "surface-tint": "#d9b9ff",
+              secondary: "#80d3e2",
+              primary: "#e2c7ff",
+              "surface-bright": "#383849",
+              "primary-container": "#cba6f7",
+              "outline-variant": "#4a444f",
+              "primary-fixed-dim": "#d9b9ff",
+              "on-tertiary-fixed": "#002205",
+              background: "#121221",
+              "inverse-on-surface": "#2f2f40",
+              "surface-container": "#1e1e2e",
+              "surface-container-highest": "#333344",
+              "inverse-primary": "#704f98",
+              "tertiary-fixed": "#b4f2af",
+              "tertiary-container": "#89c485",
+              "surface-container-lowest": "#0d0d1c",
+              "surface-container-low": "#1a1a2a",
+              "on-tertiary-container": "#1a5220",
+              "surface-container-high": "#292839",
+              "on-background": "#e3e0f7",
+              "on-surface": "#e3e0f7",
+              "on-primary-fixed-variant": "#57377f",
+              surface: "#121221",
+              "on-tertiary-fixed-variant": "#19511f",
+              "surface-dim": "#121221",
+              "on-primary-container": "#57377f",
+              "surface-variant": "#333344",
+              "error-container": "#93000a",
+              "primary-fixed": "#eedbff",
+              outline: "#968e9a",
+              "on-error-container": "#ffdad6",
+              "secondary-container": "#00707e",
+              "on-secondary-container": "#a2f1ff",
+              "on-secondary-fixed-variant": "#004f58",
+              "on-surface-variant": "#cdc3d1",
+              "on-primary": "#3f1e66",
+              error: "#ffb4ab",
+              "on-secondary-fixed": "#001f24",
+              "on-tertiary": "#00390c",
+              "inverse-surface": "#e3e0f7",
+              "on-error": "#690005",
+              "secondary-fixed-dim": "#80d3e2",
+              "tertiary-fixed-dim": "#99d595",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              "element-gap": "1.5rem",
+              "container-max": "1200px",
+              gutter: "24px",
+              "section-gap": "8rem",
+              "margin-mobile": "16px",
+            },
+            fontFamily: {
+              "label-md": ["JetBrains Mono"],
+              "headline-md": ["Hanken Grotesk"],
+              "display-lg": ["Hanken Grotesk"],
+              "headline-lg": ["Hanken Grotesk"],
+              "code-sm": ["JetBrains Mono"],
+              "body-md": ["Geist"],
+              "headline-lg-mobile": ["Hanken Grotesk"],
+              "body-lg": ["Geist"],
+            },
+            fontSize: {
+              "label-md": [
+                "14px",
+                {
+                  lineHeight: "1.4",
+                  letterSpacing: "0.05em",
+                  fontWeight: "500",
+                },
+              ],
+              "headline-md": ["24px", { lineHeight: "1.4", fontWeight: "600" }],
+              "display-lg": [
+                "64px",
+                {
+                  lineHeight: "1.1",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "800",
+                },
+              ],
+              "headline-lg": ["48px", { lineHeight: "1.2", fontWeight: "700" }],
+              "code-sm": ["13px", { lineHeight: "1.5", fontWeight: "400" }],
+              "body-md": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+              "headline-lg-mobile": [
+                "32px",
+                { lineHeight: "1.2", fontWeight: "700" },
+              ],
+              "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .neon-glow {
+        text-shadow:
+          0 0 10px rgba(203, 166, 247, 0.4),
+          0 0 20px rgba(203, 166, 247, 0.2);
+      }
+      .bg-grid-pattern {
+        background-image:
+          linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.03) 1px,
+            transparent 1px
+          );
+        background-size: 40px 40px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-surface-container-lowest text-on-surface font-body-md antialiased min-h-screen flex flex-col relative overflow-x-hidden"
+  >
+    <!-- Subtle Background Elements -->
+    <div class="fixed inset-0 pointer-events-none bg-grid-pattern z-0"></div>
+    <div
+      class="fixed top-[-20%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-primary-container/5 blur-[120px] pointer-events-none z-0"
+    ></div>
+    <div
+      class="fixed bottom-[-20%] right-[-10%] w-[40vw] h-[40vw] rounded-full bg-secondary-container/10 blur-[120px] pointer-events-none z-0"
+    ></div>
+    <!-- TopNavBar (Shared Component) -->
+    <nav
+      class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/5 shadow-sm"
+    >
+      <div
+        class="flex justify-between items-center h-16 px-gutter max-w-container-max mx-auto"
+      >
+        <!-- Brand Logo -->
+        <div
+          class="font-headline-md text-headline-md font-bold text-primary tracking-tighter"
+        >
+          NeonNocturne
+        </div>
+        <!-- Desktop Navigation -->
+        <ul class="hidden md:flex items-center gap-2">
+          <li>
+            <a
+              class="block px-4 py-2 text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md rounded-md hover:bg-surface-variant/50"
+              href="#"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              class="block px-4 py-2 text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md rounded-md hover:bg-surface-variant/50"
+              href="#"
+              >Projects</a
+            >
+          </li>
+          <li>
+            <a
+              class="block px-4 py-2 text-on-surface-variant hover:text-primary transition-colors text-label-md font-label-md rounded-md hover:bg-surface-variant/50"
+              href="#"
+              >Skills</a
+            >
+          </li>
+          <li>
+            <!-- Active State -->
+            <a
+              class="block px-4 py-2 text-primary font-bold border-b-2 border-primary pb-1 text-label-md font-label-md rounded-t-md bg-surface-variant/20"
+              href="#"
+              >Contact</a
+            >
+          </li>
+        </ul>
+        <!-- Trailing Actions -->
+        <div class="flex items-center gap-3">
+          <button
+            class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 transition-all duration-200"
+            title="terminal"
+          >
+            <span class="material-symbols-outlined" data-icon="terminal"
+              >terminal</span
+            >
+          </button>
+          <button
+            class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 transition-all duration-200 hidden sm:flex"
+            title="code"
+          >
+            <span class="material-symbols-outlined" data-icon="code">code</span>
+          </button>
+          <button
+            class="bg-primary-container text-on-primary-fixed px-5 py-2 rounded-lg font-label-md text-label-md hover:scale-95 active:scale-95 transition-transform hidden sm:block font-bold shadow-[0_0_15px_rgba(203,166,247,0.15)]"
+          >
+            Download CV
+          </button>
+          <img
+            class="w-10 h-10 rounded-full border border-white/10 object-cover ml-2"
+            data-alt="A highly detailed close-up avatar portrait of a software developer in a dark moody studio. Soft rim lighting with subtle purple and blue neon edge lights framing the subject's face, conveying a modern tech aesthetic."
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJnt2n1CqfzCjb4DjQr-jlWgZ1o4euZFfGO5jWWk3Cs1TxrcN9kHBUlV1w2gocvdXIFJ5qEYuqJl4jAvEnez0VfFS7WCva-scrsV57GIWZPyo2lr43xrhWEeND0brLVhPz086-5B6QqzzQR8sVdZrcviAFf4liQ0p21Gz3NWxu39sK0JIXLy03_W3lJf6ptGWs3Oa9_FsUAhDRM5nDhMPbPdPjoENgVuhqhzLhsnBYlQzCzjv81c0"
+          />
+        </div>
+      </div>
+    </nav>
+    <!-- Main Content Canvas -->
+    <main
+      class="flex-grow flex flex-col items-center justify-center px-gutter pt-32 pb-section-gap max-w-4xl mx-auto w-full relative z-10"
+    >
+      <!-- Status Badge -->
+      <div
+        class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/10 bg-surface/50 backdrop-blur-md mb-8"
+      >
+        <span
+          class="w-2.5 h-2.5 rounded-full bg-tertiary shadow-[0_0_8px_rgba(163,224,159,0.8)] animate-pulse"
+        ></span>
+        <span class="font-label-md text-label-md text-on-surface-variant"
+          >Available for new projects</span
+        >
+      </div>
+      <!-- Hero Section -->
+      <h1
+        class="font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface text-center neon-glow tracking-tight"
+      >
+        Timothy Cole
+      </h1>
+      <h2
+        class="font-headline-md text-headline-md text-primary mt-4 text-center"
+      >
+        Full-Stack Software Engineer
+      </h2>
+      <!-- Bio Paragraph -->
+      <p
+        class="font-body-lg text-body-lg text-on-surface-variant mt-8 text-center max-w-2xl leading-relaxed"
+      >
+        I specialize in architecting scalable, high-performance backends and
+        crafting precise, interactive interfaces. As a self-taught developer, I
+        focus on building
+        <span
+          class="text-primary-container bg-primary-container/10 px-1.5 py-0.5 rounded font-code-sm"
+          >resilient systems</span
+        >
+        and
+        <span
+          class="text-primary-container bg-primary-container/10 px-1.5 py-0.5 rounded font-code-sm"
+          >intuitive UX</span
+        >
+        rather than just writing code.
+      </p>
+      <!-- Primary Actions Group -->
+      <div
+        class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-12 w-full"
+      >
+        <!-- Primary Email CTA -->
+        <a
+          class="w-full sm:w-auto bg-primary-container text-on-primary-fixed px-8 py-4 rounded-full font-label-md text-label-md flex items-center justify-center gap-3 hover:-translate-y-1 hover:shadow-[0_4px_20px_rgba(203,166,247,0.3)] transition-all duration-300 font-bold"
+          href="#"
+        >
+          <span
+            class="material-symbols-outlined"
+            data-icon="mail"
+            data-weight="fill"
+            >mail</span
+          >
+          hello@timothycole.dev
+        </a>
+        <!-- Secondary Actions -->
+        <a
+          class="w-full sm:w-auto border border-primary/30 text-primary bg-surface/30 backdrop-blur-sm px-8 py-4 rounded-full font-label-md text-label-md flex items-center justify-center gap-3 hover:bg-primary/10 transition-colors duration-300"
+          href="#"
+        >
+          <span class="material-symbols-outlined" data-icon="code_blocks"
+            >code_blocks</span
+          >
+          GitHub
+        </a>
+        <a
+          class="w-full sm:w-auto border border-primary/30 text-primary bg-surface/30 backdrop-blur-sm px-8 py-4 rounded-full font-label-md text-label-md flex items-center justify-center gap-3 hover:bg-primary/10 transition-colors duration-300"
+          href="#"
+        >
+          <span class="material-symbols-outlined" data-icon="work">work</span>
+          LinkedIn
+        </a>
+      </div>
+      <!-- Section Divider -->
+      <div
+        class="w-full h-px border-t border-dashed border-white/10 my-20"
+      ></div>
+      <!-- Beyond Code Section -->
+      <section class="w-full flex flex-col items-center">
+        <h3
+          class="font-headline-lg text-headline-md text-on-surface text-center mb-4"
+        >
+          Off Duty
+        </h3>
+        <p
+          class="font-body-md text-body-md text-on-surface-variant text-center max-w-lg mb-10"
+        >
+          When I step away from the IDE, you can usually find me exploring
+          abstract 3D modeling, studying typography, or experimenting with
+          minimal graphic design.
+        </p>
+        <!-- Image Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-3xl">
+          <!-- Image 1 -->
+          <div
+            class="group relative aspect-square rounded-xl overflow-hidden border border-white/5 bg-surface-container"
+          >
+            <div
+              class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 mix-blend-overlay"
+            ></div>
+            <img
+              class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-105"
+              data-alt="A highly detailed 3D abstract composition featuring glowing glass spheres and metallic geometric shapes intersecting, rendered in a dark studio environment with dramatic rim lighting using soft lavender and deep navy blue tones, creating a sophisticated and futuristic aesthetic."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBanXTbsuOgOrIAlW04HFkYPo1gW8wGyXBSw6BFlXt9xLcDVpfCLow6nzdKoKZOl-3d8O0IBLkPYr8amS5P17eGvklgvTS5tHyAs1uVYT7lxzuCcZ82szaWsLX99QEeGpyP-D5eQvECUTDzADIyiDEKpCyVNSUImgaFQH1G6rweWq6HZeT2KXUdY9I3fKfQgn79L0WQr_SjQdk6tJNOvnJ5Ouf5JVjFnG6VLGerS3PrQ9USJj85mV0"
+            />
+          </div>
+          <!-- Image 2 -->
+          <div
+            class="group relative aspect-square rounded-xl overflow-hidden border border-white/5 bg-surface-container mt-0 sm:mt-8"
+          >
+            <div
+              class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 mix-blend-overlay"
+            ></div>
+            <img
+              class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-105"
+              data-alt="A highly detailed minimalist typography poster design mounted on a textured dark wall. The poster features stark white sans-serif text forming geometric patterns against a deep black background, illuminated by a single, sharp spotlight creating dramatic shadows."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5a7Ij538kosfr1G-R2sSBnA6o8ue99x0fsDCUwbE0UktJ7M8GL-3BdBcCSQc39y_qi2LF9m1FYzEQdOZsymCx2tNWdhPr_Ou8ngejZL0JpLOCHUzKxnsRZioQSIa_pv6JsOzzp1YjcL9XGvHn7Usxtn05vzwSbn_wi3sOo6juhxIUqBpCoD79OwbLQdBnX2s-l3cojHXDZcYx8Jvcod-IDmiFXNBH3fFVdkC7nTm9F4dQIUcvrt8"
+            />
+          </div>
+          <!-- Image 3 -->
+          <div
+            class="group relative aspect-square rounded-xl overflow-hidden border border-white/5 bg-surface-container"
+          >
+            <div
+              class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 mix-blend-overlay"
+            ></div>
+            <img
+              class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-105"
+              data-alt="A highly detailed close-up photograph of a vintage mechanical keyboard alongside a sleek modern stylus pen on a dark slate desk mat. The scene is illuminated by dim, warm ambient lighting that contrasts beautifully with the cool tones of the surrounding digital environment."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPQo4wv62FUu4uiFzi_4MRyi4IjnIrEu2iIgVb5gj_peN1Z4UEz_S2R9i2h6s3shNootlWfwfF1FvNztwXbKO3jd2OV7I8WplZ2HhD2tQXJLWjyL_dzoAznh2_o_rB2056i4vPtCk6ClBMPGJVbbw-HkDevYF7Iy3vA3HX_QV_0Z7aBY9bY0FXWT5U1oF0aOGm111kjgPjeLaQh-qPFMcVGvmTgi_xdhP7UFzKRNs7UFFN-M7K1R0"
+            />
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Footer (Shared Component) -->
+    <footer
+      class="w-full py-6 bg-surface-container-lowest border-t border-dashed border-white/10 mt-auto relative z-10"
+    >
+      <div
+        class="flex flex-col sm:flex-row justify-between items-center px-gutter max-w-container-max mx-auto gap-4"
+      >
+        <span class="font-label-md text-label-md text-secondary tracking-wide">
+          © 2024 Built with Neon Nocturne
+        </span>
+        <div class="flex gap-6">
+          <a
+            class="text-on-surface-variant hover:text-primary transition-colors font-code-sm text-code-sm opacity-80 hover:opacity-100"
+            href="#"
+            >GitHub</a
+          >
+          <a
+            class="text-on-surface-variant hover:text-primary transition-colors font-code-sm text-code-sm opacity-80 hover:opacity-100"
+            href="#"
+            >LinkedIn</a
+          >
+          <a
+            class="text-on-surface-variant hover:text-primary transition-colors font-code-sm text-code-sm opacity-80 hover:opacity-100"
+            href="#"
+            >Twitter</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
