@@ -19,12 +19,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen font-body-md text-body-md overflow-x-hidden">
+      <body className="min-h-screen font-body-md text-body-md overflow-x-hidden flex flex-col">
         <div className="page-bg" aria-hidden="true" />
         <Header />
-        <main className="relative max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-24 pb-32">
-          {children}
-        </main>
+        <main className="relative w-full flex-1 flex flex-col">{children}</main>
         <Footer />
       </body>
     </html>

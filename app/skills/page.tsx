@@ -3,13 +3,13 @@ import RightPanel from "./RightPanel";
 
 export default function SkillsPage() {
   return (
-    <div className="flex flex-1 overflow-hidden relative">
+    <div className="flex flex-1 overflow-hidden relative min-h-0 w-full">
       {/* Subtle Glow Overlay */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
       {/* Sidebar (Left, ~280px) */}
       <LeftSidebar />
       {/* Main Content (Center) */}
-      <main className="flex-1 bg-surface relative overflow-y-auto flex justify-center">
+      <div className="flex-1 bg-surface relative overflow-y-auto flex justify-center min-w-0">
         <div className="max-w-3xl w-full p-8 md:p-12 lg:p-16 flex flex-col">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-on-surface-variant font-code-sm text-code-sm mb-6">
@@ -96,7 +96,7 @@ export default function SkillsPage() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
       {/* Right Panel (Metadata, ~300px) */}
       <RightPanel />
     </div>
