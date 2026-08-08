@@ -1,0 +1,60 @@
+<div class="p-8 md:p-12 space-y-6">
+  <h2
+    class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider flex items-center gap-2"
+  >
+    <span class="material-symbols-outlined text-[16px]">account_tree</span>
+    Services
+  </h2>
+
+  @if (services().length) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      @for (service of services(); track service.slug) {
+        <div
+          class="group p-4 rounded-xl bg-surface-container border border-white/5 hover:border-primary/30 transition-colors flex items-start gap-4"
+        >
+          @if (service.logo) {
+            <div
+              class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center shrink-0"
+            >
+              <img
+                [src]="service.logo"
+                [alt]="service.name"
+                class="w-6 h-6 object-contain brightness-0 invert opacity-80"
+              />
+            </div>
+          } @else {
+            <div
+              class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center shrink-0"
+            >
+              <span class="material-symbols-outlined text-[20px] text-on-surface-variant">
+                deployed_code
+              </span>
+            </div>
+          }
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="font-headline-md text-sm font-semibold text-on-surface truncate">
+                {{ service.name }}
+              </h3>
+              <span
+                class="material-symbols-outlined text-[16px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+              >
+                arrow_forward
+              </span>
+            </div>
+            <p class="font-code-sm text-code-sm text-on-surface-variant mt-0.5 line-clamp-2">
+              {{ service.description }}
+            </p>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div
+      class="flex flex-col items-center justify-center gap-4 py-16 text-on-surface-variant"
+    >
+      <span class="material-symbols-outlined text-[40px] opacity-30">account_tree</span>
+      <p class="font-body-md text-body-md">No services defined for this project.</p>
+    </div>
+  }
+</div>

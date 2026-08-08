@@ -1,0 +1,88 @@
+<div class="mb-1">
+  <button
+    type="button"
+    (click)="onFolderClick()"
+    class="w-full flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors text-left"
+    [class.bg-surface-variant/30]="isActiveFolder()"
+    [class.text-on-surface]="isActiveFolder() || open()"
+    [class.bg-surface-variant/20]="!isActiveFolder() && open()"
+    [class.text-on-surface-variant]="!isActiveFolder() && !open()"
+    [class.hover:bg-surface-variant/50]="!isActiveFolder() && !open()"
+    [style.padding-left]="paddingLeft()"
+  >
+    <span
+      class="material-symbols-outlined text-[16px] transition-transform duration-200"
+      [class.rotate-90]="open()"
+    >
+      chevron_right
+    </span>
+    @if (project().logo) {
+      <span
+        class="inline-block w-4 h-4 shrink-0 {{ folderColorFor(project().type) }}"
+        [style.-webkit-mask]="'url(' + project().logo + ') center / contain no-repeat'"
+        [style.mask]="'url(' + project().logo + ') center / contain no-repeat'"
+        [style.background-color]="'currentColor'"
+      ></span>
+    } @else {
+      <span class="material-symbols-outlined text-[16px] {{ folderColorFor(project().type) }}">
+        {{ open() ? 'folder_open' : 'folder' }}
+      </span>
+    }
+    <span [class.font-medium]="isActiveFolder() || open()">
+      {{ project().name }}
+    </span>
+  </button>
+
+  <div
+    class="grid transition-[grid-template-rows] duration-200"
+    [class.grid-rows-[1fr]]="open()"
+    [class.grid-rows-[0fr]]="!open()"
+  >
+    <div class="overflow-hidden">
+      @if (sectionsFor(project()).length > 0 || (project().services?.length ?? 0) > 0) {
+        <div
+          class="mt-1 border-l border-white/5 pl-2 space-y-1"
+          [style.margin-left]="nestedMarginLeft()"
+        >
+          @for (section of sectionsFor(project()); track section.key) {
+            <button
+              type="button"
+              (click)="onSectionClick(section.key)"
+              class="w-full flex items-center gap-2 px-2 py-1 rounded cursor-pointer text-left transition-colors"
+              [class.bg-primary-container/10]="isActiveFolder() && activeSection() === section.key"
+              [class.text-primary-container]="isActiveFolder() && activeSection() === section.key"
+              [class.border-l-2]="isActiveFolder() && activeSection() === section.key"
+              [class.border-primary-container]="isActiveFolder() && activeSection() === section.key"
+              [class.-ml-[9px]]="isActiveFolder() && activeSection() === section.key"
+              [class.pl-[9px]]="isActiveFolder() && activeSection() === section.key"
+              [class.hover:bg-surface-variant/50]="!(isActiveFolder() && activeSection() === section.key)"
+              [class.text-on-surface-variant]="!(isActiveFolder() && activeSection() === section.key)"
+            >
+              <span class="material-symbols-outlined text-[14px]">
+                {{ section.icon }}
+              </span>
+              <span>{{ section.label }}</span>
+            </button>
+          }
+
+          @for (child of project().services ?? []; track child.slug) {
+            <app-project-folder
+              [project]="child"
+              [open]="isOpen(child.slug)"
+              [isActiveFolder]="activeSlug() === child.slug"
+              [activeSection]="activeSlug() === child.slug ? activeSection() : null"
+              [openIds]="openIds()"
+              [activeSlug]="activeSlug()"
+              [depth]="depth() + 1"
+              (toggle)="onChildToggle(child.slug)"
+              (activate)="onChildActivate(child.slug)"
+              (selectSection)="onChildSelectSection($event)"
+              (activateProject)="onChildActivate($event)"
+              (toggleId)="onChildToggle($event)"
+            />
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

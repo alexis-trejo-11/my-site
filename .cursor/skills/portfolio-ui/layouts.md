@@ -4,57 +4,74 @@ Two shells. Pick one per route; do not mix a marketing hero into a workspace pan
 
 ## App chrome (all pages)
 
-From `app/layout.tsx`:
+From `src/index.html`, `src/app/app.ts`, and `src/app/app.html`:
 
 ```
 html.dark
-  body.min-h-screen.flex.flex-col
-    .page-bg (fixed, aria-hidden)
-    Header (sticky glass)
-    main.flex-1.flex.flex-col
-    Footer
+  body.h-dvh.flex.flex-col.overflow-hidden
+    app-root (:host flex column, min-h-0)
+      router-outlet content
+      app-footer (hidden on /projects — projects page renders its own footer)
 ```
 
-**Header** (`app/component/layout/Header.tsx`):
+**Header** (`src/app/shared/header/`):
 
-- `bg-surface/80 backdrop-blur-xl border-b border-white/5 sticky`
-- Left: wordmark `AlexisTrejo` (`font-headline-md font-bold text-primary`)
-- Center (md+): text links — active = `text-primary border-b-2`; idle = `text-on-surface-variant` + soft hover fill
-- Right: primary `Projects` button (`bg-primary-container rounded-lg`) + terminal icon
+- `bg-surface/80 backdrop-blur-xl border-b border-white/5`
+- Sticky by default; on `/projects`, pass `[autoHide]="true"` — header slides away until pointer nears top edge
+- Left: wordmark `AlexisTrejo` (`font-headline-md font-bold text-primary`) → `routerLink="/"`
+- Center (md+): nav links via `routerLink` + `routerLinkActive` — active = `text-primary border-b-2`; idle = `text-on-surface-variant` + soft hover fill
+- Right: `API Tester` CTA (`/api-tester`) + notes icon (`/notes`)
 
-**Footer**: `bg-surface-container-lowest`, top `border-dashed border-white/10`, brand + social links + copyright.
+**Footer** (`src/app/shared/footer/footer.ts`):
+
+- `bg-surface-container-lowest`, top `border-dashed border-white/10`, brand + social links + copyright
+- Global footer in `app.html`; `/projects` hides it and renders `<app-footer>` inside the page scroll area instead
 
 ---
 
 ## Workspace shell (Postman)
 
-**Routes:** `/projects`, `/skills`  
-**Pattern:** three columns under the header; height consumes remaining viewport.
+**Routes:** `/projects` (live), `/skills` (stub)  
+**Pattern:** CSS grid under the header; panes toggle open/closed via signals.
 
-```tsx
-<div className="flex flex-1 overflow-hidden relative min-h-0 w-full">
-  <LeftSidebar />   {/* ~280px */}
-  <Main />          {/* flex-1 */}
-  <RightPanel />    {/* ~300px */}
+```html
+<app-header [autoHide]="true" />
+<div class="flex-1 overflow-y-auto min-h-0 w-full">
+  <div class="grid w-full min-h-full items-stretch" [class]="gridClass()">
+    @if (explorerOpen()) { <app-project-explorer /> }
+    <app-project-documentation />
+    @if (metadataOpen()) { <app-project-metadata /> }
+  </div>
+  <app-footer />
 </div>
 ```
 
+`gridClass()` in `projects.ts`:
+
+| Panes open | Grid |
+|------------|------|
+| Explorer + metadata | `280px \| 1fr \| 300px` (metadata column `lg+` only) |
+| Explorer only | `280px \| 1fr` |
+| Metadata only | `1fr \| 300px` (metadata `lg+`) |
+| Neither | `1fr` |
+
 | Pane | Width | Surface | Responsibility |
 |------|-------|---------|----------------|
-| Left | `w-[280px] shrink-0` | `bg-surface-container-lowest` or `surface-container-low` | Search/filter, folder tree, “Explorer” |
-| Center | `flex-1 min-w-0` | `bg-surface` | Title, actions, tabs, document / code |
-| Right | `w-[300px] shrink-0` | `surface` or `surface-container-lowest` | Stack, resources, related, activity |
+| Left | `280px` | `bg-surface-container-lowest` | Filter input, folder tree (`app-project-tree`) |
+| Center | `minmax(0,1fr)` | `bg-surface` | Toolbar (pane toggles), title, actions, section body |
+| Right | `300px` | `bg-surface-container-low` | Repo meta, metrics, commit timeline |
 
 **Responsive:**
 
-- Left: often `hidden md:flex`
-- Right: often `hidden lg:flex`
-- On small screens, center takes full width; navigation can later become drawers — keep the **mental model** of explorer / document / context.
+- Metadata column uses `lg:grid-cols-[…_300px]` — collapses on smaller viewports
+- Explorer/metadata toggles in documentation toolbar (`left_panel_open` / `right_panel_open` icons)
+- On small screens, center takes full width when side panes are closed
 
-**Center column variants:**
+**Center column variants** (`project-documentation.html`):
 
-1. **Project workspace** (`ProjectDetail`): header block with title + action buttons → editor-style tabs → scrollable body (`p-8`, content `max-w-3xl mx-auto`).
-2. **Knowledge workspace** (`skills/page`): breadcrumb (mono) → H1 → prose → CTA pills → dashed separator → callout panel. Optional ambient glow orb behind content.
+1. **Overview header:** status badge → gradient title → description → Try it / View Source CTAs
+2. **Section header:** compact title bar for non-overview sections
+3. **Body:** `@switch (activeSection())` renders overview, markdown sections, API explorer placeholder, or services list
 
 **Do not** put marketing-width expertise grids inside workspace panes.
 
@@ -64,19 +81,26 @@ html.dark
 
 **Routes:** `/`, `/contact`
 
-```tsx
-<div className="max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-16 pb-32">
-  {/* centered sections */}
-</div>
+```html
+<div class="page-bg" aria-hidden="true"></div>
+<app-header />
+<main class="relative w-full flex flex-col">
+  <div class="min-h-[calc(100dvh-4.5rem)] … max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+    <!-- hero -->
+  </div>
+  <div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter pb-32">
+    <!-- sections -->
+  </div>
+</main>
 ```
 
-**Home composition** (`app/page.tsx`):
+**Home composition** (`pages/home/`):
 
-1. Hero — status pill, gradient name, one supporting sentence, two CTAs, tiny OS meta
+1. Hero — status pill, gradient name, one supporting sentence, two CTAs, tiny OS meta (`hero/hero.html`)
 2. `dashed-divider`
-3. Expertise section — headline with italic `text-secondary` word, bento-ish grid (`md:grid-cols-3`, featured tiles `md:col-span-2`), then favorite tools row
+3. Expertise section — headline with italic `text-secondary` word, bento-ish grid (`md:grid-cols-3`, featured tiles `md:col-span-2`), then favorite tools row (`home/skills/skills.html`)
 
-**Contact composition:**
+**Contact composition** (`pages/contact/contact.html`):
 
 - Centered availability pill with pulsed green dot
 - Large display name + role
@@ -90,6 +114,6 @@ html.dark
 
 ## Spacing rhythm
 
-- Workspace chrome: tight (`p-2`–`p-4` trees, `p-6` right panels).
-- Document reading: generous (`p-8`–`p-16`, `space-y-6`–`space-y-8`).
+- Workspace chrome: tight (`p-2`–`p-4` trees, `p-5`–`p-6` right panels).
+- Document reading: generous (`p-8`–`p-12`, `space-y-4`–`space-y-8`).
 - Marketing sections: large vertical gaps (`mb-16`, `pt-20`, `section-gap`).

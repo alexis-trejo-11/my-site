@@ -1,0 +1,24 @@
+<div class="p-8 md:p-12 flex flex-col items-center justify-center min-h-[360px] gap-6">
+  <div
+    class="w-16 h-16 rounded-2xl bg-surface-container border border-white/5 flex items-center justify-center"
+  >
+    <span class="material-symbols-outlined text-[32px] text-primary-container">api</span>
+  </div>
+  <div class="text-center space-y-2">
+    <h2 class="font-headline-md text-headline-md text-on-surface">
+      {{ project().name }} — API Explorer
+    </h2>
+    <p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
+      Interactive API testing for this project is coming soon.
+    </p>
+  </div>
+  <a
+    [href]="project().metadata.repositoryLink + '#api'"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-primary-container/30 text-primary-container font-label-md text-label-md hover:bg-primary-container/10 transition-colors"
+  >
+    <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+    View API docs on GitHub
+  </a>
+</div>

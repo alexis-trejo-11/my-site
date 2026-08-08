@@ -15,13 +15,15 @@ The site should feel like a **developer tool you open to work**, not a generic p
 
 | Layer | Location |
 |-------|----------|
-| CSS tokens & atmosphere | `app/globals.css` |
-| Root chrome | `app/layout.tsx`, `app/component/layout/` |
-| Workspace dummies | `app/projects/`, `app/skills/` |
-| Marketing dummies | `app/hero/`, `app/page.tsx`, `app/contact/` |
+| CSS tokens & atmosphere | `src/styles.css` |
+| Root chrome | `src/index.html`, `src/app/app.ts`, `src/app/shared/` |
+| Workspace | `src/app/pages/projects/` |
+| Marketing | `src/app/pages/home/`, `src/app/pages/contact/` |
+| Routes | `src/app/app.routes.ts` |
 | Agent skill | `.cursor/skills/portfolio-ui/` (`SKILL.md`, `tokens.md`, `layouts.md`, `components.md`) |
+| Legacy (deprecated) | `next/` — migration reference only; do not add new UI there |
 
-Dummy components are incomplete on data by design; **layout, density, and class language are intentional**.
+Components may be incomplete on data by design; **layout, density, and class language are intentional**.
 
 ## Visual pillars
 
@@ -39,12 +41,14 @@ Dummy components are incomplete on data by design; **layout, density, and class 
 - Reuse `@theme` tokens and utilities (`page-bg`, `gradient-text`, `card-border`, `glow-hover`, `dashed-divider`)
 - Match existing sidebar/tab/chip recipes when adding features
 - Keep workspace dense and tool-like; keep home hero sparse
+- Build UI in Angular under `src/app/`
 
 **Don’t**
 
 - Reintroduce the old light “Serene Human” / terracotta / Newsreader system
 - Invent parallel color names or light mode as default
 - Turn the first marketing viewport into a dashboard of cards and stats
+- Add new UI to the deprecated `next/` app
 
 ## Related reading
 

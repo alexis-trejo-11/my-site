@@ -1,0 +1,123 @@
+<div class="flex flex-1 min-w-0 flex-col">
+  <div
+    class="sticky top-0 z-20 flex items-center justify-between gap-1 px-4 md:px-6 py-2 border-b border-white/5 bg-surface/90 backdrop-blur-xl shrink-0"
+  >
+    <button
+      type="button"
+      class="inline-flex items-center gap-1.5 p-2 rounded-lg border transition-colors"
+      [class.text-primary]="explorerOpen()"
+      [class.bg-white/5]="explorerOpen()"
+      [class.border-white/10]="explorerOpen()"
+      [class.text-on-surface-variant]="!explorerOpen()"
+      [class.border-transparent]="!explorerOpen()"
+      [class.hover:bg-white/5]="!explorerOpen()"
+      [class.hover:text-on-surface]="!explorerOpen()"
+      (click)="explorerToggle.emit()"
+      [attr.aria-label]="explorerOpen() ? 'Hide project explorer' : 'Show project explorer'"
+      [title]="explorerOpen() ? 'Hide explorer' : 'Show explorer'"
+    >
+      <span class="material-symbols-outlined text-[20px]">
+        {{ explorerOpen() ? 'left_panel_close' : 'left_panel_open' }}
+      </span>
+      @if (!explorerOpen()) {
+        <span class="font-label-md text-label-md">Explorer</span>
+      }
+    </button>
+    <button
+      type="button"
+      class="inline-flex items-center gap-1.5 p-2 rounded-lg border transition-colors"
+      [class.text-primary]="metadataOpen()"
+      [class.bg-white/5]="metadataOpen()"
+      [class.border-white/10]="metadataOpen()"
+      [class.text-on-surface-variant]="!metadataOpen()"
+      [class.border-transparent]="!metadataOpen()"
+      [class.hover:bg-white/5]="!metadataOpen()"
+      [class.hover:text-on-surface]="!metadataOpen()"
+      (click)="metadataToggle.emit()"
+      [attr.aria-label]="metadataOpen() ? 'Hide project metadata' : 'Show project metadata'"
+      [title]="metadataOpen() ? 'Hide metadata' : 'Show metadata'"
+    >
+      <span class="material-symbols-outlined text-[20px]">
+        {{ metadataOpen() ? 'right_panel_close' : 'right_panel_open' }}
+      </span>
+      @if (!metadataOpen()) {
+        <span class="font-label-md text-label-md">Metadata</span>
+      }
+    </button>
+  </div>
+
+  @if (showOverviewHeader()) {
+    <header class="p-8 md:p-12 pb-6 border-b border-white/5 space-y-4 shrink-0">
+      <div
+        class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md border text-code-sm font-code-sm {{
+          statusStyle().badge
+        }}"
+      >
+        <span class="w-1.5 h-1.5 rounded-full animate-pulse {{ statusStyle().dot }}"></span>
+        <span>{{ statusStyle().label }}</span>
+      </div>
+
+      <h1 class="font-display-lg text-display-lg text-on-surface">
+        {{ getTitleWords() }}
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+          {{ getTitleSuffix() }}
+        </span>
+      </h1>
+
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+        {{ project().description }}
+      </p>
+
+      <div class="flex flex-wrap gap-4">
+        @if (project().metadata.deploymentLink; as demoUrl) {
+          <a
+            [href]="demoUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-primary-container text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md hover:bg-primary transition-all font-bold flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined">play_arrow</span> Try it
+          </a>
+        }
+        <a
+          [href]="project().metadata.repositoryLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-transparent border border-outline text-on-surface px-6 py-2.5 rounded-lg font-label-md text-label-md hover:bg-surface-variant transition-all flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined">code</span> View Source
+        </a>
+      </div>
+    </header>
+  } @else {
+    <header class="px-8 md:px-12 py-4 border-b border-white/5 shrink-0">
+      <h1 class="font-headline-md text-headline-md text-on-surface truncate">
+        {{ project().name }}
+      </h1>
+    </header>
+  }
+
+  @switch (activeSection()) {
+    @case ('overview') {
+      <app-project-overview [overview]="project().docs?.overview" />
+    }
+    @case ('architecture') {
+      <app-project-markdown-section [src]="markdownSrc('architecture')" />
+    }
+    @case ('features') {
+      <app-project-markdown-section [src]="markdownSrc('features')" />
+    }
+    @case ('infrastructure') {
+      <app-project-markdown-section [src]="markdownSrc('infrastructure')" />
+    }
+    @case ('apiExplorer') {
+      <app-project-api-explorer [project]="project()" />
+    }
+    @case ('services') {
+      <app-project-services-section [services]="project().services ?? []" />
+    }
+    @default {
+      <app-project-overview [overview]="project().docs?.overview" />
+    }
+  }
+</div>

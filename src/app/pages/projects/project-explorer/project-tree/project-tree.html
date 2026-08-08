@@ -1,0 +1,33 @@
+<div class="p-4 border-b ide-border">
+  <div class="relative">
+    <span
+      class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm"
+    >
+      search
+    </span>
+    <input
+      class="w-full bg-surface-container border ide-border rounded px-9 py-1.5 text-sm font-code-sm focus:outline-none focus:border-primary-container/50 transition-colors"
+      placeholder="Filter projects..."
+      type="text"
+      [value]="filter()"
+      (input)="onFilterInput($event)"
+    />
+  </div>
+</div>
+<div class="flex-1 overflow-y-auto p-2 font-code-sm text-code-sm">
+  @for (project of filtered(); track project.slug) {
+    <app-project-folder
+      [project]="project"
+      [open]="isOpen(project.slug)"
+      [isActiveFolder]="activeSlug() === project.slug"
+      [activeSection]="activeSlug() === project.slug ? activeSection() : null"
+      [openIds]="openIds()"
+      [activeSlug]="activeSlug()"
+      (toggle)="toggleOpen(project.slug)"
+      (activate)="selectProject(project.slug)"
+      (selectSection)="selectSection($event)"
+      (activateProject)="selectProject($event)"
+      (toggleId)="toggleOpen($event)"
+    />
+  }
+</div>

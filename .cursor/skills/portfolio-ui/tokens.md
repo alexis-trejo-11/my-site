@@ -1,6 +1,6 @@
 # Tokens
 
-Source of truth: `app/globals.css` (`@theme` + utility classes).
+Source of truth: `src/styles.css` (`@theme` + utility classes).
 
 ## Palette (Catppuccin Macchiato–inspired)
 
@@ -38,7 +38,7 @@ Folder icons in explorers often tint with `text-secondary`, `text-tertiary`, `te
 | `font-label-md` / `text-label-md` | JetBrains Mono | 14px / 500 | Buttons, panel headers (`uppercase tracking-wider`) |
 | `font-code-sm` / `text-code-sm` | JetBrains Mono | 13px / 400 | Trees, code, meta timestamps |
 
-Loaded in `app/layout.tsx` from Google Fonts (+ Material Symbols).
+Loaded in `src/index.html` from Google Fonts (+ Material Symbols).
 
 ## Radius & spacing
 
@@ -56,17 +56,18 @@ Loaded in `app/layout.tsx` from Google Fonts (+ Material Symbols).
 
 ## Atmosphere utilities
 
-Defined in `app/globals.css` — reuse, do not reimplement:
+Defined in `src/styles.css` — reuse, do not reimplement:
 
-- **`page-bg`** — fixed full-viewport layer: base `#11111b`, lavender/cyan/green radial glows, SVG noise overlay (`mix-blend-mode: overlay`). Mount once in root layout.
+- **`page-bg`** — fixed full-viewport layer: base `#11111b`, lavender/cyan/green radial glows, SVG noise overlay (`mix-blend-mode: overlay`). Mount on marketing pages (e.g. `home.html`).
 - **`gradient-text`** — lavender → green gradient clip for hero name.
 - **`dashed-divider`** — `1px dashed rgba(255,255,255,0.1)`.
 - **`card-border`** — `1px solid rgba(255,255,255,0.1)`.
+- **`glass-panel`** — frosted panel with blur (available if needed).
 - **`glow-hover`** — on hover: soft purple box-shadow + brighter border.
 
 ## Border convention: `ide-border`
 
-Components use the class `ide-border` as IDE hairline chrome. Treat it as equivalent to a faint white border (`border-white/5` / `card-border`). If the utility is missing from CSS, add:
+Components use the class `ide-border` as IDE hairline chrome. Treat it as equivalent to a faint white border (`border-white/5` / `card-border`). Defined in `src/styles.css`:
 
 ```css
 .ide-border {

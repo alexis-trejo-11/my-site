@@ -1,0 +1,30 @@
+<app-header [autoHide]="true" />
+<div class="flex-1 overflow-y-auto min-h-0 w-full">
+  <div class="relative w-full min-h-full">
+    <div class="grid w-full min-h-full items-stretch" [class]="gridClass()">
+      @if (explorerOpen()) {
+        <app-project-explorer
+          [projects]="projects()"
+          [activeSlug]="activeProject()?.slug ?? null"
+          [activeSection]="activeSection()"
+          (projectSelect)="selectProject($event)"
+          (sectionSelect)="selectSection($event)"
+        />
+      }
+      @if (activeProject(); as project) {
+        <app-project-documentation
+          [project]="project"
+          [activeSection]="activeSection()"
+          [explorerOpen]="explorerOpen()"
+          [metadataOpen]="metadataOpen()"
+          (explorerToggle)="toggleExplorer()"
+          (metadataToggle)="toggleMetadata()"
+        />
+        @if (metadataOpen()) {
+          <app-project-metadata [metadata]="project.metadata" />
+        }
+      }
+    </div>
+  </div>
+  <app-footer class="shrink-0" />
+</div>

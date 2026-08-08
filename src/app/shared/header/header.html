@@ -1,0 +1,40 @@
+<nav
+  class="bg-surface/80 backdrop-blur-xl dark:bg-surface/80 text-primary dark:text-primary font-body-md text-body-md w-full z-50 border-b border-white/5"
+  [class.sticky]="!autoHide()"
+  [class.top-0]="!autoHide()"
+  (mouseenter)="onNavEnter()"
+  (mouseleave)="onNavLeave($event)"
+>
+  <div class="flex justify-between items-center px-margin-mobile md:px-gutter py-4 w-full">
+    <a href="/" class="font-headline-md text-headline-md font-bold text-primary dark:text-primary">
+      AlexisTrejo
+    </a>
+    <div class="hidden md:flex gap-6 items-center">
+      @for (item of menuItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="text-primary border-b-2 border-primary pb-1"
+          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+          class="text-on-surface-variant hover:text-on-surface hover:bg-white/5 px-2 py-1 rounded active:scale-95 duration-150 transition-all"
+        >
+          {{ item.label }}
+        </a>
+      }
+    </div>
+    <div class="flex items-center gap-4">
+      <a
+        href="/api-tester"
+        class="hidden md:flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary rounded-lg font-label-md text-label-md hover:bg-primary transition-colors"
+      >
+        <span class="material-symbols-outlined text-[18px]">API</span>
+        API Tester
+      </a>
+      <a
+        href="/notes"
+        class="material-symbols-outlined cursor-pointer hover:text-white transition-colors"
+      >
+        book
+      </a>
+    </div>
+  </div>
+</nav>
