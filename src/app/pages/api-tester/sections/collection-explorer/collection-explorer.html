@@ -1,0 +1,39 @@
+<aside
+  class="flex h-full w-64 min-h-0 shrink-0 flex-col border-r border-outline-variant/20 bg-surface-container"
+>
+  <div class="p-3 border-b border-outline-variant/10">
+    <div
+      class="flex items-center bg-surface-variant/40 rounded px-2 py-1 border border-outline-variant/20 focus-within:border-primary/50 transition-colors"
+    >
+      <span
+        class="material-symbols-outlined text-on-surface-variant text-sm mr-2"
+        data-icon="filter_list"
+        >filter_list</span
+      >
+      <input
+        class="bg-transparent border-none text-code-sm font-code-sm text-on-surface focus:ring-0 w-full p-0"
+        placeholder="Filter collections..."
+        type="text"
+        [value]="store.filterQuery()"
+        (input)="onFilterInput($event)"
+      />
+    </div>
+  </div>
+  <div class="flex-1 overflow-y-auto p-2 space-y-1">
+    @for (collection of store.filteredCollections(); track collection.id) {
+      <app-collection-tree [collection]="collection" />
+    }
+  </div>
+  <div
+    class="p-3 border-t border-outline-variant/10 flex justify-between items-center bg-surface-container-low"
+  >
+    <span class="font-code-sm text-code-sm text-on-surface-variant"
+      >Env: <span class="text-primary">Staging</span></span
+    >
+    <span
+      class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer hover:text-primary"
+      data-icon="settings"
+      >settings</span
+    >
+  </div>
+</aside>

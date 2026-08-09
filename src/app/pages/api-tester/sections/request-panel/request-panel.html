@@ -1,0 +1,160 @@
+<main class="flex flex-1 min-h-0 w-full flex-col bg-background min-w-0 border-r border-outline-variant/20">
+  <!-- Unified URL & Tabs Bar -->
+  <div class="p-3 border-b border-outline-variant/10 bg-surface-container-low flex flex-col gap-3">
+    <div class="flex gap-1 overflow-x-auto no-scrollbar border-b border-outline-variant/10 pb-2">
+      @for (tab of openTabs(); track tab.id) {
+        <button
+          type="button"
+          (click)="activateTab(tab.id)"
+          class="group flex items-center gap-2 px-3 py-1 rounded-t font-code-sm text-code-sm whitespace-nowrap transition-colors"
+          [class.bg-surface-variant]="store.activeRequestId() === tab.id"
+          [class.text-primary]="store.activeRequestId() === tab.id"
+          [class.border-b-2]="store.activeRequestId() === tab.id"
+          [class.border-primary]="store.activeRequestId() === tab.id"
+          [class.text-on-surface-variant]="store.activeRequestId() !== tab.id"
+          [class.hover:bg-surface-variant/50]="store.activeRequestId() !== tab.id"
+        >
+          <span class="font-bold text-[10px] {{ badgeFor(tab.request).colorClass }}">{{
+            badgeFor(tab.request).label
+          }}</span>
+          {{ labelFor(tab) }}
+          <span
+            class="material-symbols-outlined text-xs ml-1 hover:text-error opacity-60 group-hover:opacity-100"
+            data-icon="close"
+            (click)="closeTab($event, tab.id)"
+            >close</span
+          >
+        </button>
+      }
+      <button
+        type="button"
+        class="px-2 py-1 text-on-surface-variant hover:text-primary transition-colors"
+        aria-label="New request"
+      >
+        <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+      </button>
+    </div>
+    <div class="flex gap-2">
+      <div
+        class="flex-1 flex items-center bg-surface-container rounded border border-outline-variant/30 focus-within:border-primary/50 focus-within:shadow-[0_0_10px_rgba(203,166,247,0.1)] transition-all"
+      >
+        @if (activeBadge(); as badge) {
+          <span class="pl-3 pr-2 font-code-sm text-code-sm font-bold {{ badge.colorClass }}">{{
+            badge.label
+          }}</span>
+        } @else {
+          <span class="pl-3 pr-2 font-code-sm text-code-sm font-bold text-on-surface-variant"
+            >—</span
+          >
+        }
+        <div class="w-px h-5 bg-outline-variant/30 mx-2"></div>
+        <input
+          class="flex-1 bg-transparent border-none text-code-sm font-code-sm text-on-surface focus:ring-0 p-0 py-1.5 min-w-0"
+          type="text"
+          [value]="activePath()"
+          placeholder="Select a request from the explorer"
+          readonly
+        />
+      </div>
+      <button
+        type="button"
+        class="bg-primary text-background font-label-md text-label-md px-6 py-1.5 rounded hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(203,166,247,0.2)] flex items-center gap-2"
+      >
+        Send <span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+      </button>
+    </div>
+  </div>
+  <!-- Request Configuration Panels -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex gap-4 px-4 pt-2 border-b border-outline-variant/10">
+      <button class="font-code-sm text-code-sm text-primary border-b-2 border-primary pb-2">
+        Params
+      </button>
+      <button class="font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface pb-2">
+        Headers (2)
+      </button>
+      <button class="font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface pb-2">
+        Auth
+      </button>
+      <button class="font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface pb-2">
+        Body
+      </button>
+    </div>
+    <div class="flex-1 p-4 overflow-y-auto">
+      <!-- Params Table -->
+      <div
+        class="border border-outline-variant/20 rounded bg-surface-container-low overflow-hidden"
+      >
+        <div
+          class="grid grid-cols-12 gap-2 p-2 border-b border-outline-variant/20 bg-surface-variant/30 font-code-sm text-code-sm text-on-surface-variant"
+        >
+          <div class="col-span-1 text-center"></div>
+          <div class="col-span-4">Key</div>
+          <div class="col-span-4">Value</div>
+          <div class="col-span-3">Description</div>
+        </div>
+        <div
+          class="grid grid-cols-12 gap-2 p-2 border-b border-outline-variant/10 items-center font-code-sm text-code-sm"
+        >
+          <div class="col-span-1 text-center">
+            <input
+              checked=""
+              class="rounded border-outline-variant bg-surface text-primary focus:ring-primary focus:ring-offset-background"
+              type="checkbox"
+            />
+          </div>
+          <div class="col-span-4">
+            <input
+              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded text-on-surface"
+              type="text"
+              value="include_metrics"
+            />
+          </div>
+          <div class="col-span-4">
+            <input
+              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded text-on-surface"
+              type="text"
+              value="true"
+            />
+          </div>
+          <div class="col-span-3 text-on-surface-variant">
+            <input
+              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded"
+              placeholder="Description"
+              type="text"
+            />
+          </div>
+        </div>
+        <div class="grid grid-cols-12 gap-2 p-2 items-center font-code-sm text-code-sm">
+          <div class="col-span-1 text-center">
+            <input
+              class="rounded border-outline-variant bg-surface text-primary focus:ring-primary focus:ring-offset-background"
+              type="checkbox"
+            />
+          </div>
+          <div class="col-span-4">
+            <input
+              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded text-on-surface-variant"
+              placeholder="Key"
+              type="text"
+            />
+          </div>
+          <div class="col-span-4">
+            <input
+              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded text-on-surface-variant"
+              placeholder="Value"
+              type="text"
+            />
+          </div>
+          <div class="col-span-3 text-on-surface-variant">
+            <input
+              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded"
+              placeholder="Description"
+              type="text"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

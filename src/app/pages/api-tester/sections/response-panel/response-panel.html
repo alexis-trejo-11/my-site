@@ -1,0 +1,66 @@
+<aside class="flex h-full w-[400px] min-h-0 shrink-0 flex-col bg-surface-container">
+  <!-- Response Meta Bar -->
+  <div
+    class="p-3 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-high font-code-sm text-code-sm"
+  >
+    <div class="flex gap-4">
+      <span class="text-tertiary flex items-center gap-1"
+        ><span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span> 200 OK</span
+      >
+      <span class="text-secondary">124 ms</span>
+      <span class="text-on-surface-variant">2.4 KB</span>
+    </div>
+    <div class="flex gap-2">
+      <button class="text-on-surface-variant hover:text-primary">
+        <span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span>
+      </button>
+      <button class="text-on-surface-variant hover:text-primary">
+        <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+      </button>
+    </div>
+  </div>
+  <!-- Response Tabs -->
+  <div class="flex gap-4 px-4 pt-2 border-b border-outline-variant/10">
+    <button class="font-code-sm text-code-sm text-primary border-b-2 border-primary pb-2">
+      Body
+    </button>
+    <button class="font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface pb-2">
+      Headers (8)
+    </button>
+    <button class="font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface pb-2">
+      Cookies
+    </button>
+  </div>
+  <div
+    class="px-4 py-2 border-b border-outline-variant/10 flex justify-between items-center bg-surface-variant/20"
+  >
+    <div class="flex gap-2">
+      <span class="px-2 py-0.5 rounded bg-surface-variant text-on-surface font-code-sm text-[11px]"
+        >JSON</span
+      >
+      <span
+        class="px-2 py-0.5 rounded text-on-surface-variant hover:bg-surface-variant cursor-pointer font-code-sm text-[11px]"
+        >Raw</span
+      >
+    </div>
+    <span class="font-code-sm text-[11px] text-on-surface-variant">application/json</span>
+  </div>
+  <!-- Response Body Editor -->
+  <div class="flex-1 p-4 overflow-y-auto font-code-sm text-code-sm leading-relaxed text-on-surface">
+    <pre class="whitespace-pre-wrap"><span class="text-on-surface-variant">any</span>
+      <span class="text-primary">"status"</span><span class="text-on-surface-variant">:</span> <span class="text-tertiary">"success"</span><span class="text-on-surface-variant">,</span>
+      <span class="text-primary">"data"</span><span class="text-on-surface-variant">:</span> <span class="text-on-surface-variant">any</span>
+        <span class="text-primary">"user_id"</span><span class="text-on-surface-variant">:</span> <span class="text-tertiary">"usr_98a7f6c5"</span><span class="text-on-surface-variant">b</span>
+        <span class="text-primary">"profile"</span><span class="text-on-surface-variant">:</span> <span class="text-on-surface-variant">any</span>
+          <span class="text-primary">"username"</span><span class="text-on-surface-variant">:</span> <span class="text-tertiary">"neon_developer"</span><span class="text-on-surface-variant">b</span>
+          <span class="text-primary">"role"</span><span class="text-on-surface-variant">:</span> <span class="text-tertiary">"admin"</span><span class="text-on-surface-variant">b</span>
+          <span class="text-primary">"created_at"</span><span class="text-on-surface-variant">:</span> <span class="text-tertiary">"2023-11-20T14:32:00Z"</span><span class="text-on-surface-variant">b</span>
+        <span class="text-on-surface-variant">b</span>
+        <span class="text-primary">"metrics"</span><span class="text-on-surface-variant">:</span> <span class="text-on-surface-variant">a</span>
+          <span class="text-primary">"api_calls_this_month"</span><span class="text-on-surface-variant">:</span> <span class="text-secondary">42850</span><span class="text-on-surface-variant">b</span>
+          <span class="text-primary">"active_workspaces"</span><span class="text-on-surface-variant">:</span> <span class="text-secondary">3</span>
+        <span class="text-on-surface-variant">b</span>
+      <span class="text-on-surface-variant">b</span>
+    <span class="text-on-surface-variant">b</span></pre>
+  </div>
+</aside>

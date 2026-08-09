@@ -1,6 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Header } from '../../shared/header/header';
-import { Footer } from '../../shared/footer/footer';
 import { ProjectExplorer } from './project-explorer/project-explorer';
 import { ProjectMetadata } from './project-metadata/project-metadata';
 import { ProjectDocumentation } from './project-documentation/project-documentation';
@@ -10,7 +9,7 @@ import { ProjectSectionKey } from './project-explorer/project-folder/project-fol
 
 @Component({
   selector: 'app-projects',
-  imports: [Header, Footer, ProjectExplorer, ProjectDocumentation, ProjectMetadata],
+  imports: [Header, ProjectExplorer, ProjectDocumentation, ProjectMetadata],
   templateUrl: './projects.html',
   styleUrl: './projects.css',
 })
