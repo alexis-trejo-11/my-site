@@ -11,7 +11,16 @@ import { ProjectSectionKey } from './project-explorer/project-folder/project-fol
   selector: 'app-projects',
   imports: [Header, ProjectExplorer, ProjectDocumentation, ProjectMetadata],
   templateUrl: './projects.html',
-  styleUrl: './projects.css',
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+  `,
 })
 export class Projects implements OnInit {
   projectService = inject(ProjectsService);

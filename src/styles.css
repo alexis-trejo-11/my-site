@@ -121,9 +121,9 @@ body {
 
 /* Atmospheric background — Yaak-style soft glows + depth */
 .page-bg {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
   pointer-events: none;
   background-color: #11111b;

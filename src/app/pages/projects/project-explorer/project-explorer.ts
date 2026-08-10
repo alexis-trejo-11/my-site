@@ -7,7 +7,11 @@ import { ProjectSectionKey } from './project-folder/project-folder.helpers';
   selector: 'app-project-explorer',
   imports: [ProjectTree],
   templateUrl: './project-explorer.html',
-  styleUrl: './project-explorer.css',
+  styles: `
+    :host {
+      display: contents;
+    }
+  `,
 })
 export class ProjectExplorer {
   projects = input<ProjectModel[]>([]);

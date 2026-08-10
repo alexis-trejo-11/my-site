@@ -7,6 +7,15 @@ import { Header } from '../../shared/header/header';
   selector: 'app-home',
   imports: [Hero, Skills, Header],
   templateUrl: './home.html',
-  styleUrl: './home.css',
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      width: 100%;
+      position: relative;
+      isolation: isolate;
+    }
+  `,
 })
 export class Home {}

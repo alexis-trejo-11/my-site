@@ -6,7 +6,17 @@ import { Footer } from './shared/footer/footer';
   selector: 'app-root',
   imports: [RouterOutlet, Footer],
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+  `,
 })
 export class App {
   protected readonly title = signal('alexistrejo-stite');

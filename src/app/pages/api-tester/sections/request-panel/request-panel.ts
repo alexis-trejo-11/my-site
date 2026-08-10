@@ -11,7 +11,14 @@ import { CollectionRequestItem } from '../../api-tester.model';
   selector: 'app-request-panel',
   imports: [],
   templateUrl: './request-panel.html',
-  styleUrl: './request-panel.css',
+  styles: `
+    :host {
+      display: flex;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+    }
+  `,
 })
 export class RequestPanel {
   readonly store = inject(ApiTesterStore);

@@ -7,7 +7,11 @@ import { RequestItem } from '../request-item/request-item';
   selector: 'app-collection-folder',
   imports: [CollectionFolder, RequestItem],
   templateUrl: './collection-folder.html',
-  styleUrl: './collection-folder.css',
+  styles: `
+    :host {
+      display: block;
+    }
+  `,
 })
 export class CollectionFolder {
   private readonly store = inject(ApiTesterStore);

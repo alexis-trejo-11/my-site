@@ -6,7 +6,14 @@ import { ApiTesterStore } from '../../api-tester.store';
   selector: 'app-collection-explorer',
   imports: [CollectionTree],
   templateUrl: './collection-explorer.html',
-  styleUrl: './collection-explorer.css',
+  styles: `
+    :host {
+      display: flex;
+      flex-shrink: 0;
+      height: 100%;
+      min-height: 0;
+    }
+  `,
 })
 export class CollectionExplorer {
   readonly store = inject(ApiTesterStore);

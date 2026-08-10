@@ -7,7 +7,28 @@ const TOP_REVEAL_ZONE_PX = 12;
   selector: 'app-header',
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.html',
-  styleUrl: './header.css',
+  styles: `
+    :host {
+      display: block;
+      width: 100%;
+    }
+
+    :host(.auto-hide) {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      transform: translateY(-100%);
+      transition: transform 0.25s ease;
+      pointer-events: none;
+    }
+
+    :host(.auto-hide.revealed) {
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  `,
   host: {
     '[class.auto-hide]': 'autoHide()',
     '[class.revealed]': 'autoHide() && chromeVisible()',

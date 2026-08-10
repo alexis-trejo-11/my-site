@@ -93,8 +93,8 @@ Used by `/projects` (implemented), `/skills` (stub — migrate from `next/app/sk
 Used by `/`, `/contact`:
 
 - Centered column `max-w-container-max` or `max-w-4xl`
-- Hero: status pill → big name → one sentence → CTA pair
-- Expertise grid + tools; contact uses availability glow + rounded-full CTAs
+- Hero: status pill → big name → one sentence → CTA pair (data from `src/app/shared/profile.ts`)
+- Expertise grid + tools; contact uses compact intro + links grid + Off Duty
 - Reference: `src/app/pages/home/home.html`, `hero/hero.html`, `home/skills/skills.html`, `contact/contact.html`
 
 ## When extending the UI

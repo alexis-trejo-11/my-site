@@ -1,2 +1,285 @@
 <app-header />
-<p>skills works!</p>
+<!-- Main IDE Layout -->
+<div class="flex flex-1 overflow-hidden relative">
+  <!-- Subtle Glow Overlay -->
+  <div
+    class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none"
+  ></div>
+  <!-- Sidebar (Left, ~280px) -->
+  <aside
+    class="w-[280px] bg-surface-container-low border-r ide-border flex flex-col shrink-0 overflow-y-auto hidden md:flex"
+  >
+    <div class="p-4 border-b ide-border">
+      <h2 class="font-code-sm text-code-sm text-on-surface-variant uppercase tracking-wider">
+        Explorer
+      </h2>
+      <div class="mt-2 flex items-center gap-2">
+        <img
+          class="w-6 h-6 rounded-full object-cover"
+          data-alt="A small, stylized avatar image of a developer, lit with soft neon purple and blue tones, set against a dark background. The style is modern and digital."
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcS0YaXkg4vqflrPuHGvbpFRWKu4V4JmPkc2Rupf13wnOSVZMB_beiw4yEkacQtKRM1v3vf5gLIJY7Iwv-gk0e1N3bdEcGwV6lzeygJzA1QiMGwZq3dRUZRu70-WJH9zxjbGekT0Dbnqr-LDtXuA5lL0OQyU0VnkNJupKWn83XYgKqIk8SzOJFkl3etTK94c6UfF4IsBzJScKzz7nhfChlYzZMA1zVtXhW670jKqscxLnQLduF-o4"
+        />
+        <div class="flex flex-col">
+          <span class="font-label-md text-label-md text-primary">Project_v1</span>
+          <span class="font-code-sm text-code-sm text-on-surface-variant text-[11px]">main*</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 py-4 font-code-sm text-code-sm">
+      <!-- Expanded Category -->
+      <div class="mb-2">
+        <button
+          class="w-full flex items-center gap-2 px-4 py-1 text-on-surface-variant hover:bg-surface-variant/20 transition-colors cursor-pointer select-none"
+        >
+          <span
+            class="material-symbols-outlined text-[16px] transition-transform duration-200 rotate-90"
+            data-icon="folder_open"
+            >folder_open</span
+          >
+          <span>Software Architecture</span>
+        </button>
+        <div class="pl-8 py-1">
+          <div class="border-l border-white/5 ml-[7px] pl-4 flex flex-col gap-1 relative">
+            <a
+              class="flex items-center gap-2 px-2 py-1 bg-secondary-container/30 text-on-secondary-container border-l-2 border-primary -ml-[18px] pl-[16px] rounded-r cursor-pointer select-none"
+              href="#"
+            >
+              <span
+                class="material-symbols-outlined text-[14px] text-primary"
+                data-icon="data_object"
+                >data_object</span
+              >
+              <span>Hexagonal</span>
+            </a>
+            <a
+              class="flex items-center gap-2 px-2 py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 rounded cursor-pointer select-none"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[14px]" data-icon="description"
+                >description</span
+              >
+              <span>Clean Architecture</span>
+            </a>
+            <a
+              class="flex items-center gap-2 px-2 py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 rounded cursor-pointer select-none"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[14px]" data-icon="layers">layers</span>
+              <span>Layered</span>
+            </a>
+            <a
+              class="flex items-center gap-2 px-2 py-1 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 rounded cursor-pointer select-none"
+              href="#"
+            >
+              <span class="material-symbols-outlined text-[14px]" data-icon="all_out">all_out</span>
+              <span>Onion</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- Collapsed Categories -->
+      <button
+        class="w-full flex items-center gap-2 px-4 py-1.5 text-on-surface-variant hover:bg-surface-variant/20 transition-colors cursor-pointer select-none"
+      >
+        <span class="material-symbols-outlined text-[16px]" data-icon="folder">folder</span>
+        <span>Systems &amp; Protocols</span>
+      </button>
+      <button
+        class="w-full flex items-center gap-2 px-4 py-1.5 text-on-surface-variant hover:bg-surface-variant/20 transition-colors cursor-pointer select-none"
+      >
+        <span class="material-symbols-outlined text-[16px]" data-icon="folder">folder</span>
+        <span>Data &amp; Persistence</span>
+      </button>
+      <button
+        class="w-full flex items-center gap-2 px-4 py-1.5 text-on-surface-variant hover:bg-surface-variant/20 transition-colors cursor-pointer select-none"
+      >
+        <span class="material-symbols-outlined text-[16px]" data-icon="folder">folder</span>
+        <span>Cloud &amp; Infrastructure</span>
+      </button>
+      <button
+        class="w-full flex items-center gap-2 px-4 py-1.5 text-on-surface-variant hover:bg-surface-variant/20 transition-colors cursor-pointer select-none"
+      >
+        <span class="material-symbols-outlined text-[16px]" data-icon="folder">folder</span>
+        <span>AI-Augmented Engineering</span>
+      </button>
+      <button
+        class="w-full flex items-center gap-2 px-4 py-1.5 text-on-surface-variant hover:bg-surface-variant/20 transition-colors cursor-pointer select-none"
+      >
+        <span class="material-symbols-outlined text-[16px]" data-icon="folder">folder</span>
+        <span>Frontend</span>
+      </button>
+    </div>
+  </aside>
+  <!-- Main Content (Center) -->
+  <main class="flex-1 bg-surface relative overflow-y-auto flex justify-center">
+    <div class="max-w-3xl w-full p-8 md:p-12 lg:p-16 flex flex-col">
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 text-on-surface-variant font-code-sm text-code-sm mb-6">
+        <span class="hover:text-primary cursor-pointer transition-colors"
+          >Software Architecture</span
+        >
+        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+        <span class="text-primary">Hexagonal</span>
+      </div>
+      <!-- Header -->
+      <h1
+        class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8 tracking-tight"
+      >
+        Hexagonal Architecture
+      </h1>
+      <!-- Content Area -->
+      <div
+        class="prose prose-invert max-w-none text-on-surface-variant font-body-lg text-body-lg leading-relaxed space-y-6"
+      >
+        <p>
+          The Hexagonal Architecture, or Ports and Adapters pattern, aims to create loosely coupled
+          application components that can be easily connected to their software environment by means
+          of
+          <span
+            class="font-code-sm bg-surface-variant/50 text-primary px-1.5 py-0.5 rounded border ide-border inline-block mx-1"
+            >ports</span
+          >
+          and
+          <span
+            class="font-code-sm bg-surface-variant/50 text-primary px-1.5 py-0.5 rounded border ide-border inline-block mx-1"
+            >adapters</span
+          >. This makes components exchangeable at any level and facilitates test automation.
+        </p>
+        <p>
+          The core logic is isolated from outside concerns. The application is driven by users,
+          programs, automated test or batch scripts, and is developed and tested in isolation from
+          its eventual run-time devices and databases.
+        </p>
+      </div>
+      <!-- Actions -->
+      <div class="mt-12 flex flex-wrap gap-4">
+        <a
+          class="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 text-primary font-label-md text-label-md hover:bg-primary/10 transition-all duration-300 relative overflow-hidden"
+          href="#"
+        >
+          <div
+            class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"
+          ></div>
+          <span class="material-symbols-outlined text-[18px]">code</span>
+          <span>Ver ejemplo →</span>
+        </a>
+        <a
+          class="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 text-primary font-label-md text-label-md hover:bg-primary/10 transition-all duration-300 relative overflow-hidden"
+          href="#"
+        >
+          <div
+            class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"
+          ></div>
+          <span class="material-symbols-outlined text-[18px]">menu_book</span>
+          <span>Ver notas →</span>
+        </a>
+      </div>
+      <!-- Subtle separator -->
+      <div class="w-full h-px border-t border-dashed border-white/10 my-12"></div>
+      <!-- Extra visual fluff for high-end feel -->
+      <div
+        class="p-6 bg-surface-container rounded-lg border ide-border relative overflow-hidden group"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        ></div>
+        <div class="flex items-start gap-4">
+          <div class="p-3 bg-surface rounded-md border ide-border flex-shrink-0">
+            <span class="material-symbols-outlined text-primary">lightbulb</span>
+          </div>
+          <div>
+            <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Why I use this</h3>
+            <p class="text-on-surface-variant text-sm">
+              I default to Hexagonal Architecture for complex domains where business logic changes
+              independently of delivery mechanisms (like REST APIs or Message Queues). It guarantees
+              my core logic remains unpolluted by framework specifics.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- Right Panel (Metadata, ~300px) -->
+  <aside
+    class="w-[300px] bg-surface border-l ide-border hidden lg:flex flex-col shrink-0 overflow-y-auto"
+  >
+    <div class="p-6 space-y-8">
+      <!-- Block: Related Projects -->
+      <div>
+        <h3
+          class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-[16px]">integration_instructions</span>
+          Related Projects
+        </h3>
+        <div class="flex flex-col gap-3">
+          <a
+            class="p-3 bg-surface-container rounded border ide-border hover:border-primary/50 transition-colors group"
+            href="#"
+          >
+            <div class="flex justify-between items-start mb-1">
+              <span
+                class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors"
+                >Drugstore-API</span
+              >
+              <span
+                class="material-symbols-outlined text-[16px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity"
+                >arrow_forward</span
+              >
+            </div>
+            <span class="font-code-sm text-code-sm text-on-surface-variant"
+              >Production implementation using NestJS and TypeORM.</span
+            >
+          </a>
+          <a
+            class="p-3 bg-surface-container rounded border ide-border hover:border-primary/50 transition-colors group"
+            href="#"
+          >
+            <div class="flex justify-between items-start mb-1">
+              <span
+                class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors"
+                >Social Events API</span
+              >
+              <span
+                class="material-symbols-outlined text-[16px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity"
+                >arrow_forward</span
+              >
+            </div>
+            <span class="font-code-sm text-code-sm text-on-surface-variant"
+              >Event-driven microservice.</span
+            >
+          </a>
+        </div>
+      </div>
+      <!-- Block: Related Concepts -->
+      <div>
+        <h3
+          class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-2"
+        >
+          <span class="material-symbols-outlined text-[16px]">account_tree</span>
+          Related Concepts
+        </h3>
+        <div class="flex flex-wrap gap-2">
+          <a
+            class="px-3 py-1 bg-surface-container-high rounded border ide-border font-code-sm text-code-sm text-on-surface hover:text-primary hover:border-primary/30 transition-colors"
+            href="#"
+          >
+            Clean Architecture
+          </a>
+          <a
+            class="px-3 py-1 bg-surface-container-high rounded border ide-border font-code-sm text-code-sm text-on-surface hover:text-primary hover:border-primary/30 transition-colors"
+            href="#"
+          >
+            Onion Architecture
+          </a>
+          <a
+            class="px-3 py-1 bg-surface-container-high rounded border ide-border font-code-sm text-code-sm text-on-surface hover:text-primary hover:border-primary/30 transition-colors"
+            href="#"
+          >
+            DDD
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>

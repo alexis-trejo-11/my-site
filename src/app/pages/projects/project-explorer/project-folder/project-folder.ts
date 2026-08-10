@@ -10,7 +10,6 @@ import {
   selector: 'app-project-folder',
   imports: [ProjectFolder],
   templateUrl: './project-folder.html',
-  styleUrl: './project-folder.css',
 })
 export class ProjectFolder {
   project = input.required<ProjectModel>();

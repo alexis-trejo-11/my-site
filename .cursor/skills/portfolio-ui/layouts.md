@@ -24,8 +24,10 @@ html.dark
 
 **Footer** (`src/app/shared/footer/footer.ts`):
 
-- `bg-surface-container-lowest`, top `border-dashed border-white/10`, brand + social links + copyright
-- Global footer in `app.html`; `/projects` hides it and renders `<app-footer>` inside the page scroll area instead
+- `bg-surface-container-lowest`, top `border-dashed border-white/10`
+- Brand wordmark (primary, links home) + title + availability pulse; “Get in touch” → `/contact`; copyright
+- No social row — contact channels live on `/contact`
+- Brand/copy from `PROFILE` in `src/app/shared/profile.ts`
 
 ---
 
@@ -102,11 +104,11 @@ html.dark
 
 **Contact composition** (`pages/contact/contact.html`):
 
-- Centered availability pill with pulsed green dot
-- Large display name + role
-- Bio with inline mono highlight chips
-- CTA row: filled rounded-full email + outline socials
-- Dashed divider → “Off Duty” media grid (grayscale → color on hover)
+- Marketing shell with `page-bg` (same as home)
+- Compact intro (not full-viewport hero): availability pill → display name → “Let’s connect” → short contact blurb from `PROFILE`
+- Dashed divider → contact links grid (`CONTACT_LINKS` from `src/app/shared/profile.ts`) — interactive tiles (`card-border glow-hover`) for GitHub, LinkedIn, Twitter, Documentation, CV (footer stays brand + copyright only)
+- Dashed divider → “Off Duty” hobby tiles from `PROFILE.offDuty` (icon tiles, no remote images)
+- Personal copy and links come from `PROFILE` / `CONTACT_LINKS` — do not hardcode name or URLs in templates
 
 **Hero budget:** brand name dominates; one headline idea; one short paragraph; one CTA group. No stats strip, schedule, or address blocks in the first viewport.
 

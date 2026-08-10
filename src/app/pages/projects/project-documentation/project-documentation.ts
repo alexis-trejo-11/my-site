@@ -36,7 +36,6 @@ const STATUS_STYLES: Record<
     ProjectServicesSection,
   ],
   templateUrl: './project-documentation.html',
-  styleUrl: './project-documentation.css',
   host: {
     class: 'flex flex-1 min-w-0 flex-col',
   },

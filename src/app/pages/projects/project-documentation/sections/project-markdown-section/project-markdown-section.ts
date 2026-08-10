@@ -5,7 +5,139 @@ import { MarkdownComponent } from 'ngx-markdown';
   selector: 'app-project-markdown-section',
   imports: [MarkdownComponent],
   templateUrl: './project-markdown-section.html',
-  styleUrl: './project-markdown-section.css',
+  styles: `
+    app-project-markdown-section {
+      display: block;
+    }
+
+    .markdown-prose {
+      color: var(--color-on-surface-variant);
+      font-family: var(--font-body-md);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 72ch;
+    }
+
+    .markdown-prose h1,
+    .markdown-prose h2,
+    .markdown-prose h3,
+    .markdown-prose h4 {
+      font-family: var(--font-headline-md);
+      color: var(--color-on-surface);
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+
+    .markdown-prose h1 { font-size: 2rem; font-weight: 700; margin-top: 0; }
+    .markdown-prose h2 { font-size: 1.4rem; font-weight: 600; }
+    .markdown-prose h3 { font-size: 1.1rem; font-weight: 600; }
+
+    .markdown-prose p {
+      margin-bottom: 1rem;
+    }
+
+    .markdown-prose a {
+      color: var(--color-primary-container);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .markdown-prose strong {
+      color: var(--color-on-surface);
+      font-weight: 600;
+    }
+
+    .markdown-prose table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-code-sm);
+      font-size: 13px;
+      margin: 1.5rem 0;
+    }
+
+    .markdown-prose th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      background: var(--color-surface-container-high);
+      color: var(--color-on-surface);
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .markdown-prose td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--color-on-surface-variant);
+    }
+
+    .markdown-prose tr:last-child td {
+      border-bottom: none;
+    }
+
+    .markdown-prose ul,
+    .markdown-prose ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .markdown-prose li {
+      margin-bottom: 0.35rem;
+    }
+
+    .markdown-prose code:not(pre code) {
+      font-family: var(--font-code-sm);
+      font-size: 13px;
+      background: var(--color-surface-container-high);
+      color: var(--color-primary-container);
+      padding: 0.1em 0.4em;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .markdown-prose .shiki {
+      font-family: var(--font-code-sm);
+      font-size: 13px;
+      line-height: 1.6;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      padding: 1rem;
+    }
+
+    .markdown-prose .shiki code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    .markdown-prose pre:not(.shiki) {
+      background: var(--color-surface-container);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: var(--font-code-sm);
+      font-size: 13px;
+      margin: 1.25rem 0;
+    }
+
+    .markdown-prose hr {
+      border: none;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      margin: 2rem 0;
+    }
+
+    .markdown-prose blockquote {
+      border-left: 3px solid var(--color-primary-container);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      color: var(--color-on-surface-variant);
+      font-style: italic;
+    }
+  `,
   // None so that prose + shiki styles are not scoped and apply to rendered markdown HTML
   encapsulation: ViewEncapsulation.None,
 })

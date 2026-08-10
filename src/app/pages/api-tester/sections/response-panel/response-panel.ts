@@ -4,6 +4,13 @@ import { Component } from '@angular/core';
   selector: 'app-response-panel',
   imports: [],
   templateUrl: './response-panel.html',
-  styleUrl: './response-panel.css',
+  styles: `
+    :host {
+      display: flex;
+      flex-shrink: 0;
+      height: 100%;
+      min-height: 0;
+    }
+  `,
 })
 export class ResponsePanel {}

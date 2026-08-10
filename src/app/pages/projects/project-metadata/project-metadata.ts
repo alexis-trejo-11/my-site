@@ -5,7 +5,17 @@ import { ProjectMetadataModel } from '../projects.model';
   selector: 'app-project-metadata',
   imports: [],
   templateUrl: './project-metadata.html',
-  styleUrl: './project-metadata.css',
+  styles: `
+    :host {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      :host {
+        display: contents;
+      }
+    }
+  `,
 })
 export class ProjectMetadata {
   metadata = input<ProjectMetadataModel>();

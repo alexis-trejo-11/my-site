@@ -4,6 +4,7 @@ import { Projects } from './pages/projects/projects';
 import { Skills } from './pages/skills/skills';
 import { Contact } from './pages/contact/contact';
 import { ApiTester } from './pages/api-tester/api-tester';
+import { Notes } from './pages/notes/notes';
 
 export const routes: Routes = [
   {
@@ -25,5 +26,9 @@ export const routes: Routes = [
   {
     path: 'api-tester',
     component: ApiTester,
+  },
+  {
+    path: 'notes',
+    component: Notes,
   },
 ];
