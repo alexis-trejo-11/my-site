@@ -15,6 +15,7 @@
 #   SSH_HOST           — Access hostname, e.g. ssh.alexis-trejo.com
 #   SSH_USER           — Linux user on the VPS, e.g. alexistrejo
 #   SSH_PRIVATE_KEY    — Full private key (same key you use locally for fedora-host)
+#   DEPLOY_PATH        — Absolute path to compose dir on the VPS, e.g. /home/alexistrejo/apps/my-site
 #   CF_CLIENT_ID       — Cloudflare Access Service Token Client ID
 #   CF_CLIENT_SECRET   — Cloudflare Access Service Token Client Secret
 #   GHCR_TOKEN         — GitHub PAT with read:packages (server pull from ghcr.io)
@@ -24,7 +25,7 @@
 #   that accepts that Service Token.
 #
 # Server layout expected:
-#   ~/apps/my-site/docker-compose.yml  (copy from this repo; service name: web)
+#   $DEPLOY_PATH/docker-compose.yml  (copy from this repo; service name: web)
 
 name: CI/CD
 
@@ -171,6 +172,7 @@ jobs:
           GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
           GHCR_USER: ${{ github.actor }}
           IMAGE: ghcr.io/${{ github.repository }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
           # cloudflared picks these up for non-interactive Access (Service Token).
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_CLIENT_SECRET }}
@@ -181,10 +183,10 @@ jobs:
 
           # printf %q keeps tokens with special chars safe inside the remote shell.
           ssh deploy-host \
-            "export GHCR_TOKEN=$(printf '%q' "$GHCR_TOKEN") GHCR_USER=$(printf '%q' "$GHCR_USER") IMAGE=$(printf '%q' "$IMAGE"); bash -s" <<'REMOTE'
+            "export GHCR_TOKEN=$(printf '%q' "$GHCR_TOKEN") GHCR_USER=$(printf '%q' "$GHCR_USER") IMAGE=$(printf '%q' "$IMAGE") DEPLOY_PATH=$(printf '%q' "$DEPLOY_PATH"); bash -s" <<'REMOTE'
           set -euo pipefail
 
-          cd ~/apps/my-site
+          cd "${DEPLOY_PATH}"
 
           echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 
