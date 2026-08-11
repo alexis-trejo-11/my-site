@@ -1,0 +1,23 @@
+# Keep build context small and avoid leaking local junk into the image
+node_modules
+dist
+.angular
+.git
+.github
+.gitignore
+.vscode
+.idea
+.cursor
+coverage
+tmp
+out-tsc
+__screenshots__
+docs
+# Exclude docs at repo root, but keep published learning notes in the image.
+*.md
+!public/notes/**/*.md
+docker-compose*.yml
+.dockerignore
+npm-debug.log
+yarn-error.log
+.DS_Store

@@ -1,0 +1,34 @@
+# Production Compose for the portfolio (static SPA behind Cloudflare).
+#
+# Place this file on the server at: ~/apps/my-site/docker-compose.yml
+# (or clone/pull this repo there). The CD job runs:
+#   docker compose pull web && docker compose up -d web
+#
+# Image is published by GitHub Actions to GHCR on every push to main.
+# HTTPS / proxy stay on Cloudflare — this service only listens on HTTP :4000.
+
+services:
+  web:
+    # Must match the image pushed by .github/workflows/ci-cd.yml (lowercase).
+    image: ghcr.io/alexistrejo11/my-site:latest
+    # Local: docker compose up --build  (builds for your CPU: arm64 on Apple Silicon).
+    # Server: docker compose pull && up  (uses the GHCR amd64 image).
+    build: .
+    # Uncomment on Apple Silicon ONLY if you pull the GHCR image instead of building:
+    # platform: linux/amd64
+    container_name: alexis-trejo-site
+    ports:
+      # host:container — Cloudflare (or tunnel) should target this host port
+      - '4001:4000'
+    environment:
+      # Comma-separated Host allowlist (rejects other Host headers with 444).
+      # Include every public hostname Cloudflare forwards to this container.
+      ALLOWED_HOSTS: 'localhost,127.0.0.1,alexis-trejo.com,www.alexis-trejo.com'
+    restart: unless-stopped
+    # Optional: only publish on a reverse-proxy network
+    # networks:
+    #   - proxy
+
+# networks:
+#   proxy:
+#     external: true
