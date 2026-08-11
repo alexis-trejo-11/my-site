@@ -6,10 +6,13 @@ import { Component } from '@angular/core';
   templateUrl: './response-panel.html',
   styles: `
     :host {
-      display: flex;
-      flex-shrink: 0;
-      height: 100%;
-      min-height: 0;
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      :host {
+        display: contents;
+      }
     }
   `,
 })

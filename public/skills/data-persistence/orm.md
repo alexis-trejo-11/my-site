@@ -1,0 +1,1 @@
+ORMs map objects to relational tables so application code can work with entities instead of raw SQL. They accelerate CRUD and migrations; complex queries still benefit from explicit SQL and careful transaction boundaries.

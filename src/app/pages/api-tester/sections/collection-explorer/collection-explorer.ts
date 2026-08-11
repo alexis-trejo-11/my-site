@@ -1,25 +1,40 @@
-import { Component, inject } from '@angular/core';
-import { CollectionTree } from './collection-tree/collection-tree';
+import { Component, computed, inject } from '@angular/core';
+import { ExplorerTree } from '../../../../shared/explorer-tree';
 import { ApiTesterStore } from '../../api-tester.store';
+import { collectionsToTreeNodes } from './collection-tree.mapper';
+import { RequestItem } from './request-item/request-item';
 
 @Component({
   selector: 'app-collection-explorer',
-  imports: [CollectionTree],
+  imports: [ExplorerTree, RequestItem],
   templateUrl: './collection-explorer.html',
   styles: `
     :host {
-      display: flex;
-      flex-shrink: 0;
-      height: 100%;
-      min-height: 0;
+      display: contents;
     }
   `,
 })
 export class CollectionExplorer {
   readonly store = inject(ApiTesterStore);
 
+  readonly treeNodes = computed(() =>
+    collectionsToTreeNodes(this.store.filteredCollections()),
+  );
+
+  readonly forceExpand = computed(
+    () => this.store.filterQuery().trim().length > 0,
+  );
+
   onFilterInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.store.setFilter(value);
+  }
+
+  onToggleId(id: string): void {
+    this.store.toggleExpanded(id);
+  }
+
+  onSelectLeaf(id: string): void {
+    this.store.openRequest(id);
   }
 }

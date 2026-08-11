@@ -1,0 +1,1 @@
+gRPC uses Protocol Buffers and HTTP/2 for efficient, strongly typed service-to-service calls. It fits internal microservice meshes where latency and contract strictness matter more than browser-native access.

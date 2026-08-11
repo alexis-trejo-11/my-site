@@ -1,0 +1,3 @@
+# Change Data Capture
+
+_Change Data Capture_ — stub note. Replace this file with your Obsidian markdown when you migrate the vault.

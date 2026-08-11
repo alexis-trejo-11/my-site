@@ -1,0 +1,130 @@
+<div class="flex flex-1 min-w-0 min-h-0 flex-col bg-surface">
+  <div
+    class="sticky top-0 z-20 flex items-center justify-between gap-1 px-4 md:px-6 py-2 border-b ide-border bg-surface/90 backdrop-blur-xl shrink-0"
+  >
+    <button
+      type="button"
+      class="inline-flex items-center gap-1.5 p-2 rounded-lg border transition-colors"
+      [class.text-primary]="explorerOpen()"
+      [class.bg-white/5]="explorerOpen()"
+      [class.border-white/10]="explorerOpen()"
+      [class.text-on-surface-variant]="!explorerOpen()"
+      [class.border-transparent]="!explorerOpen()"
+      [class.hover:bg-white/5]="!explorerOpen()"
+      [class.hover:text-on-surface]="!explorerOpen()"
+      (click)="explorerToggle.emit()"
+      [attr.aria-label]="explorerOpen() ? 'Hide skills explorer' : 'Show skills explorer'"
+      [title]="explorerOpen() ? 'Hide explorer' : 'Show explorer'"
+    >
+      <span class="material-symbols-outlined text-[20px]">
+        {{ explorerOpen() ? 'left_panel_close' : 'left_panel_open' }}
+      </span>
+      @if (!explorerOpen()) {
+        <span class="font-label-md text-label-md">Explorer</span>
+      }
+    </button>
+    <button
+      type="button"
+      class="inline-flex items-center gap-1.5 p-2 rounded-lg border transition-colors"
+      [class.text-primary]="metadataOpen()"
+      [class.bg-white/5]="metadataOpen()"
+      [class.border-white/10]="metadataOpen()"
+      [class.text-on-surface-variant]="!metadataOpen()"
+      [class.border-transparent]="!metadataOpen()"
+      [class.hover:bg-white/5]="!metadataOpen()"
+      [class.hover:text-on-surface]="!metadataOpen()"
+      (click)="metadataToggle.emit()"
+      [attr.aria-label]="metadataOpen() ? 'Hide skill metadata' : 'Show skill metadata'"
+      [title]="metadataOpen() ? 'Hide metadata' : 'Show metadata'"
+    >
+      <span class="material-symbols-outlined text-[20px]">
+        {{ metadataOpen() ? 'right_panel_close' : 'right_panel_open' }}
+      </span>
+      @if (!metadataOpen()) {
+        <span class="font-label-md text-label-md">Metadata</span>
+      }
+    </button>
+  </div>
+
+  <div class="flex-1 min-h-0 overflow-y-auto flex justify-center">
+    @if (skill(); as active) {
+      <div class="max-w-3xl w-full p-8 md:p-12 lg:p-16 flex flex-col">
+        <div
+          class="flex items-center gap-2 text-on-surface-variant font-code-sm text-code-sm mb-6"
+        >
+          @if (category(); as cat) {
+            <span>{{ cat.name }}</span>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+          }
+          <span class="text-primary">{{ active.name }}</span>
+        </div>
+
+        <h1
+          class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8 tracking-tight"
+        >
+          {{ active.title }}
+        </h1>
+
+        <div class="skill-markdown font-body-lg text-body-lg leading-relaxed">
+          <markdown [src]="active.contentSrc" [disableSanitizer]="true" />
+        </div>
+
+        @if (active.actions?.length) {
+          <div class="mt-12 flex flex-wrap gap-4">
+            @for (action of active.actions; track action.label) {
+              @if (action.routerLink) {
+                <a
+                  class="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 text-primary font-label-md text-label-md hover:bg-primary/10 transition-all duration-300"
+                  [routerLink]="action.routerLink"
+                >
+                  <span class="material-symbols-outlined text-[18px]">{{ action.icon }}</span>
+                  <span>{{ action.label }}</span>
+                </a>
+              } @else if (action.href) {
+                <a
+                  class="group flex items-center gap-2 px-5 py-2.5 rounded-full border border-primary/30 text-primary font-label-md text-label-md hover:bg-primary/10 transition-all duration-300"
+                  [href]="action.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span class="material-symbols-outlined text-[18px]">{{ action.icon }}</span>
+                  <span>{{ action.label }}</span>
+                </a>
+              }
+            }
+          </div>
+        }
+
+        @if (active.callout; as callout) {
+          <div class="w-full h-px border-t border-dashed border-white/10 my-12"></div>
+          <div
+            class="p-6 bg-surface-container rounded-lg border ide-border relative overflow-hidden group"
+          >
+            <div
+              class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            ></div>
+            <div class="flex items-start gap-4 relative">
+              <div class="p-3 bg-surface rounded-md border ide-border shrink-0">
+                <span class="material-symbols-outlined text-primary">{{
+                  callout.icon || 'lightbulb'
+                }}</span>
+              </div>
+              <div>
+                <h3 class="font-headline-md text-headline-md text-on-surface mb-2">
+                  {{ callout.title }}
+                </h3>
+                <p class="text-on-surface-variant text-sm">{{ callout.body }}</p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div
+        class="flex flex-1 items-center justify-center p-12 text-on-surface-variant font-code-sm text-code-sm"
+      >
+        Select a skill from the explorer.
+      </div>
+    }
+  </div>
+</div>

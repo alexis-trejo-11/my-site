@@ -1,0 +1,3 @@
+# Java Overview
+
+_Java Overview_ — stub note. Replace this file with your Obsidian markdown when you migrate the vault.

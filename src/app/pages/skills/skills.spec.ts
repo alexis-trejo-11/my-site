@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideMarkdown } from 'ngx-markdown';
 
 import { Skills } from './skills';
 
@@ -9,6 +12,7 @@ describe('Skills', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Skills],
+      providers: [provideRouter([]), provideHttpClient(), provideMarkdown()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Skills);

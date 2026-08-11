@@ -13,10 +13,7 @@ import { CollectionRequestItem } from '../../api-tester.model';
   templateUrl: './request-panel.html',
   styles: `
     :host {
-      display: flex;
-      flex: 1 1 0;
-      min-width: 0;
-      min-height: 0;
+      display: contents;
     }
   `,
 })

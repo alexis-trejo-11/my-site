@@ -1,0 +1,1 @@
+Relational databases model data with tables, keys, and constraints. Strong consistency, joins, and mature tooling make SQL the default for transactional domains when access patterns fit the relational model.

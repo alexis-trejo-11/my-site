@@ -119,6 +119,21 @@ body {
   position: relative;
 }
 
+/*
+  Routed pages fill the column above the footer by default.
+  Angular inserts the activated component as a sibling of <router-outlet>,
+  not a child — so ng generate hosts have no flex stretch unless we do this here.
+  Workspace pages can still set :host { overflow: hidden } for internal pane scroll.
+*/
+.route-outlet > :not(router-outlet) {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
 /* Atmospheric background — Yaak-style soft glows + depth */
 .page-bg {
   position: absolute;

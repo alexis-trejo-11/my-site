@@ -1,5 +1,5 @@
 <aside
-  class="flex h-full w-64 min-h-0 shrink-0 flex-col border-r border-outline-variant/20 bg-surface-container"
+  class="flex h-full min-h-0 w-full flex-col border-r border-outline-variant/20 bg-surface-container-lowest"
 >
   <div class="p-3 border-b border-outline-variant/10">
     <div
@@ -19,10 +19,16 @@
       />
     </div>
   </div>
-  <div class="flex-1 overflow-y-auto p-2 space-y-1">
-    @for (collection of store.filteredCollections(); track collection.id) {
-      <app-collection-tree [collection]="collection" />
-    }
+  <div class="flex-1 overflow-y-auto p-2">
+    <app-explorer-tree
+      [nodes]="treeNodes()"
+      [expandedIds]="store.expandedIds()"
+      [selectedId]="store.activeRequestId()"
+      [forceExpand]="forceExpand()"
+      [leafTemplate]="requestLeaf"
+      (toggleId)="onToggleId($event)"
+      (selectLeaf)="onSelectLeaf($event)"
+    />
   </div>
   <div
     class="p-3 border-t border-outline-variant/10 flex justify-between items-center bg-surface-container-low"
@@ -37,3 +43,18 @@
     >
   </div>
 </aside>
+
+<ng-template
+  #requestLeaf
+  let-node
+  let-depth="depth"
+  let-selected="selected"
+  let-select="select"
+>
+  <app-request-item
+    [request]="node.data"
+    [depth]="depth"
+    [selected]="selected"
+    (select)="select()"
+  />
+</ng-template>

@@ -11,10 +11,14 @@ import { Header } from '../../shared/header/header';
   imports: [CollectionExplorer, RequestPanel, ResponsePanel, Header],
   providers: [ApiTesterStore],
   template: `
-    <app-header />
-    <app-collection-explorer></app-collection-explorer>
-    <app-request-panel></app-request-panel>
-    <app-response-panel></app-response-panel>
+    <app-header [autoHide]="true" />
+    <div
+      class="grid h-[calc(100dvh-4.5rem)] min-h-0 w-full items-stretch grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[280px_minmax(0,1fr)_minmax(320px,400px)]"
+    >
+      <app-collection-explorer />
+      <app-request-panel />
+      <app-response-panel />
+    </div>
   `,
   styles: `
     :host {

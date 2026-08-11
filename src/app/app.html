@@ -1,6 +1,10 @@
 <div class="flex-1 min-h-0 w-full overflow-y-auto">
   <div class="flex min-h-full flex-col">
-    <div class="flex w-full flex-1 flex-col">
+    <!--
+      router-outlet does not wrap the activated page — the host is a sibling.
+      .route-outlet stretches that sibling to the footer by default (see styles.css).
+    -->
+    <div class="route-outlet flex min-h-0 w-full flex-1 flex-col">
       <router-outlet />
     </div>
     <app-footer class="shrink-0" />

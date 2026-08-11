@@ -105,6 +105,7 @@ Used by `/`, `/contact`:
 - Primary CTA: filled `bg-primary-container text-on-primary` (or `text-surface`); secondary: outline `border-primary/30` or `border-outline`.
 - Inline tech terms: mono chip on `bg-surface-variant` with semantic text color.
 - Generate new components with `ng generate component` under the matching `pages/` or `shared/` folder.
+- **Page hosts stretch to the footer by default** via `.route-outlet` in `app.html` + `styles.css` (router-outlet’s sibling). Do not re-add flex stretch `:host` solely for that. For workspace pages, still set `:host { overflow: hidden }` when panes scroll internally.
 
 ## Anti-patterns
 

@@ -1,0 +1,53 @@
+<aside
+  class="flex h-full min-h-0 w-full flex-col border-r ide-border bg-surface-container-lowest"
+>
+  <div class="p-3 border-b ide-border">
+    <h2
+      class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-3"
+    >
+      Vault
+    </h2>
+    <div
+      class="flex items-center bg-surface-variant/40 rounded px-2 py-1 border ide-border focus-within:border-primary/50 transition-colors"
+    >
+      <span
+        class="material-symbols-outlined text-on-surface-variant text-sm mr-2"
+        data-icon="search"
+        >search</span
+      >
+      <input
+        class="bg-transparent border-none text-code-sm font-code-sm text-on-surface focus:ring-0 w-full p-0"
+        placeholder="Search notes..."
+        type="text"
+        [value]="store.filterQuery()"
+        (input)="onFilterInput($event)"
+      />
+    </div>
+  </div>
+  <div class="flex-1 overflow-y-auto p-2 font-code-sm text-code-sm">
+    <app-explorer-tree
+      [nodes]="store.treeNodes()"
+      [expandedIds]="store.expandedIds()"
+      [selectedId]="store.activeNoteId()"
+      [forceExpand]="store.forceExpand()"
+      [leafTemplate]="noteLeaf"
+      (toggleId)="onToggleId($event)"
+      (selectLeaf)="onSelectLeaf($event)"
+    />
+  </div>
+</aside>
+
+<ng-template
+  #noteLeaf
+  let-node
+  let-depth="depth"
+  let-selected="selected"
+  let-select="select"
+>
+  <app-note-leaf-item
+    [note]="node.data"
+    [depth]="depth"
+    [selected]="selected"
+    (select)="select()"
+  />
+</ng-template>

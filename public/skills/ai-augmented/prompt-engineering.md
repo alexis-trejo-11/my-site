@@ -1,0 +1,1 @@
+Prompt engineering is the craft of steering models with clear goals, constraints, examples, and evaluation loops. In product work it pairs with tooling (RAG, agents, evals) rather than one-off chat tricks.

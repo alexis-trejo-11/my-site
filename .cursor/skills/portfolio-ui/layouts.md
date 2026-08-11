@@ -4,15 +4,21 @@ Two shells. Pick one per route; do not mix a marketing hero into a workspace pan
 
 ## App chrome (all pages)
 
-From `src/index.html`, `src/app/app.ts`, and `src/app/app.html`:
+From `src/index.html`, `src/app/app.ts`, `src/app/app.html`, and `src/styles.css`:
 
 ```
 html.dark
   body.h-dvh.flex.flex-col.overflow-hidden
-    app-root (:host flex column, min-h-0)
-      router-outlet content
-      app-footer (hidden on /projects — projects page renders its own footer)
+    app-root (:host flex column, min-h-0, height 100%)
+      div.overflow-y-auto.flex-1          ← scrollport
+        div.flex.min-h-full.flex-col     ← at least one viewport tall
+          div.route-outlet.flex-1        ← grows above footer
+            router-outlet
+            <page-host>                  ← sibling of outlet; stretched by .route-outlet rule
+          app-footer.shrink-0
 ```
+
+**Height to footer:** `.route-outlet > :not(router-outlet)` in `styles.css` makes every routed page `display: flex; flex-direction: column; flex: 1; min-height: 100%` so new `ng generate` pages reach the footer without copying `:host` boilerplate. Workspace pages still add `:host { overflow: hidden }` when panes scroll internally.
 
 **Header** (`src/app/shared/header/`):
 

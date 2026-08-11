@@ -1,0 +1,100 @@
+<aside
+  class="flex h-full min-h-0 w-full flex-col border-l ide-border bg-surface-container-low overflow-y-auto"
+>
+  @if (store.activeSkill(); as skill) {
+    <div class="p-6 space-y-8">
+      @if (skill.relatedProjects?.length) {
+        <div>
+          <h3
+            class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-[16px]">integration_instructions</span>
+            Related Projects
+          </h3>
+          <div class="flex flex-col gap-3">
+            @for (project of skill.relatedProjects; track project.name) {
+              @if (project.routerLink) {
+                <a
+                  class="p-3 bg-surface-container rounded border ide-border hover:border-primary/50 transition-colors group"
+                  [routerLink]="project.routerLink"
+                >
+                  <div class="flex justify-between items-start mb-1">
+                    <span
+                      class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors"
+                      >{{ project.name }}</span
+                    >
+                    <span
+                      class="material-symbols-outlined text-[16px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity"
+                      >arrow_forward</span
+                    >
+                  </div>
+                  <span class="font-code-sm text-code-sm text-on-surface-variant">{{
+                    project.description
+                  }}</span>
+                </a>
+              } @else if (project.href) {
+                <a
+                  class="p-3 bg-surface-container rounded border ide-border hover:border-primary/50 transition-colors group"
+                  [href]="project.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div class="flex justify-between items-start mb-1">
+                    <span
+                      class="font-body-md text-body-md text-on-surface group-hover:text-primary transition-colors"
+                      >{{ project.name }}</span
+                    >
+                    <span
+                      class="material-symbols-outlined text-[16px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity"
+                      >arrow_forward</span
+                    >
+                  </div>
+                  <span class="font-code-sm text-code-sm text-on-surface-variant">{{
+                    project.description
+                  }}</span>
+                </a>
+              } @else {
+                <div class="p-3 bg-surface-container rounded border ide-border">
+                  <div class="font-body-md text-body-md text-on-surface mb-1">
+                    {{ project.name }}
+                  </div>
+                  <span class="font-code-sm text-code-sm text-on-surface-variant">{{
+                    project.description
+                  }}</span>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+
+      @if (store.relatedSkills().length) {
+        <div>
+          <h3
+            class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-[16px]">account_tree</span>
+            Related Concepts
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            @for (related of store.relatedSkills(); track related.id) {
+              <button
+                type="button"
+                class="px-3 py-1 bg-surface-container-high rounded border ide-border font-code-sm text-code-sm text-on-surface hover:text-primary hover:border-primary/30 transition-colors cursor-pointer"
+                (click)="selectRelated(related.id)"
+              >
+                {{ related.name }}
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      @if (!skill.relatedProjects?.length && !store.relatedSkills().length) {
+        <p class="font-code-sm text-code-sm text-on-surface-variant">
+          No related links for this skill yet.
+        </p>
+      }
+    </div>
+  }
+</aside>

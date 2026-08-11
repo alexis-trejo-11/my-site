@@ -1,0 +1,14 @@
+<div class="space-y-1">
+  @for (node of nodes(); track node.id) {
+    <app-explorer-tree-node
+      [node]="node"
+      [depth]="0"
+      [expandedIds]="expandedIds()"
+      [selectedId]="selectedId()"
+      [forceExpand]="forceExpand()"
+      [leafTemplate]="leafTemplate()"
+      (toggleId)="toggleId.emit($event)"
+      (selectLeaf)="selectLeaf.emit($event)"
+    />
+  }
+</div>

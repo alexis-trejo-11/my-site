@@ -1,0 +1,1 @@
+Angular is a batteries-included framework for building structured web apps — routing, DI, forms, and a strong component model. Modern Angular leans on standalone components, signals, and fine-grained reactivity.

@@ -1,0 +1,1 @@
+Onion Architecture places the domain model at the center, with application services and infrastructure forming concentric rings around it. Like Hexagonal and Clean Architecture, it keeps dependencies pointing inward so infrastructure never owns the domain.
