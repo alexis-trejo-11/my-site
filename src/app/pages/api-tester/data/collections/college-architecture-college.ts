@@ -1,10 +1,7 @@
-import { CollectionModel } from '../../api-tester.model';
+import collectionJson from './college-architecture-college.json';
+import { parseCollection } from '../collection-schema';
 
-export const CollegeArchitectureCollege: CollectionModel = {
-  id: 'college-architecture',
-  name: 'College Architecture Platform',
-  description:
-    'College Architecture Platform Collection API. Provides access to full endpoint list. ',
-  items: [],
-  variables: [],
-};
+export const CollegeArchitectureCollege = parseCollection(
+  collectionJson,
+  'college-architecture-college.json',
+);

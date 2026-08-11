@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, TemplateRef, input, output } from '@angular/core';
 import {
+  ExplorerFolderTemplateContext,
   ExplorerLeafTemplateContext,
   ExplorerTreeNode,
 } from './explorer-tree.model';
@@ -21,8 +22,8 @@ export class ExplorerTreeNodeComponent {
   expandedIds = input<ReadonlySet<string>>(new Set());
   selectedId = input<string | null>(null);
   forceExpand = input(false);
-  leafTemplate =
-    input<TemplateRef<ExplorerLeafTemplateContext> | null>(null);
+  leafTemplate = input<TemplateRef<ExplorerLeafTemplateContext> | null>(null);
+  folderTemplate = input<TemplateRef<ExplorerFolderTemplateContext> | null>(null);
 
   toggleId = output<string>();
   selectLeaf = output<string>();
@@ -68,6 +69,19 @@ export class ExplorerTreeNodeComponent {
       depth: this.depth(),
       selected: this.isSelected(),
       select: () => this.onSelectLeaf(),
+    };
+  }
+
+  folderContext(): ExplorerFolderTemplateContext {
+    const node = this.node();
+    if (node.type !== 'folder') {
+      throw new Error('folderContext requires a folder node');
+    }
+    return {
+      $implicit: node,
+      depth: this.depth(),
+      expanded: this.isFolderOpen(),
+      toggle: () => this.onToggle(),
     };
   }
 }

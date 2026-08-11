@@ -1,5 +1,6 @@
 export type {
   ExplorerFolderNode,
+  ExplorerFolderTemplateContext,
   ExplorerLeafNode,
   ExplorerLeafTemplateContext,
   ExplorerTreeNode,

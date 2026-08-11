@@ -1,20 +1,24 @@
 @if (node(); as current) {
   @if (current.type === 'folder') {
     <div class="space-y-[2px]">
-      <button
-        type="button"
-        (click)="onToggle()"
-        class="flex w-full items-center gap-2 px-2 py-1 hover:bg-surface-variant/30 rounded cursor-pointer group text-on-surface text-left transition-colors"
-        [style.padding-left]="paddingLeft()"
-      >
-        <span
-          class="material-symbols-outlined text-sm text-on-surface-variant group-hover:text-primary transition-colors"
-          data-icon="folder"
+      @if (folderTemplate(); as folderTpl) {
+        <ng-container [ngTemplateOutlet]="folderTpl" [ngTemplateOutletContext]="folderContext()" />
+      } @else {
+        <button
+          type="button"
+          (click)="onToggle()"
+          class="flex w-full items-center gap-2 px-2 py-1 hover:bg-surface-variant/30 rounded cursor-pointer group text-on-surface text-left transition-colors"
+          [style.padding-left]="paddingLeft()"
         >
-          {{ isFolderOpen() ? 'folder_open' : 'folder' }}
-        </span>
-        <span class="font-code-sm text-code-sm truncate">{{ current.name }}</span>
-      </button>
+          <span
+            class="material-symbols-outlined text-sm text-on-surface-variant group-hover:text-primary transition-colors"
+            data-icon="folder"
+          >
+            {{ isFolderOpen() ? 'folder_open' : 'folder' }}
+          </span>
+          <span class="font-code-sm text-code-sm truncate">{{ current.name }}</span>
+        </button>
+      }
 
       @if (isFolderOpen()) {
         <div class="space-y-[2px]">
@@ -26,6 +30,7 @@
               [selectedId]="selectedId()"
               [forceExpand]="forceExpand()"
               [leafTemplate]="leafTemplate()"
+              [folderTemplate]="folderTemplate()"
               (toggleId)="onChildToggle($event)"
               (selectLeaf)="onChildSelect($event)"
             />
@@ -34,10 +39,7 @@
       }
     </div>
   } @else if (leafTemplate(); as tpl) {
-    <ng-container
-      [ngTemplateOutlet]="tpl"
-      [ngTemplateOutletContext]="leafContext()"
-    />
+    <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="leafContext()" />
   } @else {
     <button
       type="button"

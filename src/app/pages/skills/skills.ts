@@ -1,4 +1,5 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Header } from '../../shared/header/header';
 import { SkillDocumentation } from './skill-documentation/skill-documentation';
 import { SkillExplorer } from './skill-explorer/skill-explorer';
@@ -25,6 +26,17 @@ import { SkillsStore } from './skills.store';
 export class Skills implements OnInit {
   private readonly skillsService = inject(SkillsService);
   private readonly store = inject(SkillsStore);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
+  constructor() {
+    effect(() => {
+      const id = this.store.activeSkillId();
+      if (id) {
+        this.router.navigate(['/skills', id], { replaceUrl: true });
+      }
+    });
+  }
 
   explorerOpen = signal(true);
   metadataOpen = signal(true);
@@ -56,6 +68,10 @@ export class Skills implements OnInit {
   ngOnInit(): void {
     this.skillsService.getCategories().subscribe((categories) => {
       this.store.setCategories(categories);
+      const id = this.route.snapshot.paramMap.get('id');
+      if (id) {
+        this.store.selectSkill(id);
+      }
     });
   }
 }

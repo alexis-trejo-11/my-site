@@ -1,8 +1,7 @@
 <main
   class="flex h-full min-h-0 min-w-0 w-full flex-col border-r border-outline-variant/20 bg-surface"
 >
-  <!-- Unified URL & Tabs Bar -->
-  <div class="p-3 border-b border-outline-variant/10 bg-surface-container-low flex flex-col gap-3">
+  <div class="flex flex-col gap-3 border-b border-outline-variant/10 bg-surface-container-low p-3">
     <div class="flex gap-1 overflow-x-auto no-scrollbar border-b border-outline-variant/10 pb-2">
       @for (tab of openTabs(); track tab.id) {
         <button
@@ -32,18 +31,36 @@
         type="button"
         class="px-2 py-1 text-on-surface-variant hover:text-primary transition-colors"
         aria-label="New request"
+        title="New request"
+        (click)="store.openNewRequestEditor()"
       >
         <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
       </button>
     </div>
+
     <div class="flex gap-2">
       <div
         class="flex-1 flex items-center bg-surface-container rounded border border-outline-variant/30 focus-within:border-primary/50 focus-within:shadow-[0_0_10px_rgba(203,166,247,0.1)] transition-all"
       >
-        @if (activeBadge(); as badge) {
-          <span class="pl-3 pr-2 font-code-sm text-code-sm font-bold {{ badge.colorClass }}">{{
-            badge.label
-          }}</span>
+        @if (active(); as activeItem) {
+          @if (activeItem.request.type === 'HTTP') {
+            <select
+              class="ml-2 bg-transparent py-1.5 pl-1 pr-2 font-code-sm text-code-sm font-bold text-secondary focus:ring-0"
+              aria-label="HTTP method"
+              [value]="activeItem.request.method"
+              (change)="updateHttpMethod($any($event.target).value)"
+            >
+              @for (method of httpMethods; track method) {
+                <option class="bg-surface-container text-on-surface" [value]="method">
+                  {{ method }}
+                </option>
+              }
+            </select>
+          } @else if (activeBadge(); as badge) {
+            <span class="pl-3 pr-2 font-code-sm text-code-sm font-bold {{ badge.colorClass }}">{{
+              badge.label
+            }}</span>
+          }
         } @else {
           <span class="pl-3 pr-2 font-code-sm text-code-sm font-bold text-on-surface-variant"
             >—</span
@@ -53,110 +70,865 @@
         <input
           class="flex-1 bg-transparent border-none text-code-sm font-code-sm text-on-surface focus:ring-0 p-0 py-1.5 min-w-0"
           type="text"
-          [value]="activePath()"
+          [value]="activeDestination()"
           placeholder="Select a request from the explorer"
-          readonly
+          [readonly]="!active()"
+          (input)="updateDestination($any($event.target).value)"
         />
+        @if (activeOperation()) {
+          <span
+            class="mr-2 shrink-0 rounded border border-white/5 bg-surface-variant/50 px-2 py-0.5 font-code-sm text-[11px] text-on-surface-variant"
+          >
+            {{ activeOperation() }}
+          </span>
+        }
       </div>
-      <button
-        type="button"
-        class="bg-primary text-background font-label-md text-label-md px-6 py-1.5 rounded hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(203,166,247,0.2)] flex items-center gap-2"
-      >
-        Send <span class="material-symbols-outlined text-sm" data-icon="send">send</span>
-      </button>
+      @if (active()?.request?.type === 'WEBSOCKET') {
+        @if (webSocketConnection().status === 'OPEN') {
+          <button
+            type="button"
+            class="flex items-center gap-2 rounded border border-error/30 px-5 py-1.5 font-label-md text-label-md text-error transition-colors hover:bg-error/10"
+            (click)="disconnectWebSocket()"
+          >
+            Disconnect
+            <span class="material-symbols-outlined text-sm">link_off</span>
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="flex items-center gap-2 rounded bg-primary px-5 py-1.5 font-label-md text-label-md text-background shadow-[0_0_15px_rgba(203,166,247,0.2)] transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-40"
+            [disabled]="webSocketConnection().status === 'CONNECTING'"
+            (click)="connectWebSocket()"
+          >
+            @if (webSocketConnection().status === 'CONNECTING') {
+              Connecting
+              <span class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+            } @else {
+              Connect
+              <span class="material-symbols-outlined text-sm">link</span>
+            }
+          </button>
+        }
+      } @else if (active()?.request?.type === 'GRPC') {
+        <button
+          type="button"
+          class="flex cursor-not-allowed items-center gap-2 rounded border border-outline-variant/30 px-5 py-1.5 font-label-md text-label-md text-on-surface-variant opacity-60"
+          disabled
+          title="gRPC execution is not implemented yet"
+        >
+          Not available
+          <span class="material-symbols-outlined text-sm">construction</span>
+        </button>
+      } @else {
+        <button
+          type="button"
+          class="bg-primary text-background font-label-md text-label-md px-6 py-1.5 rounded hover:bg-primary-container transition-colors shadow-[0_0_15px_rgba(203,166,247,0.2)] flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-40"
+          [disabled]="!canSend()"
+          (click)="sendRequest()"
+        >
+          @if (isSending()) {
+            Sending
+            <span
+              class="material-symbols-outlined animate-spin text-sm"
+              data-icon="progress_activity"
+              >progress_activity</span
+            >
+          } @else {
+            Send <span class="material-symbols-outlined text-sm" data-icon="send">send</span>
+          }
+        </button>
+      }
     </div>
   </div>
-  <!-- Request Configuration Panels -->
-  <div class="flex-1 flex flex-col overflow-hidden">
-    <div class="flex gap-4 px-4 pt-2 border-b border-outline-variant/10">
-      <button class="font-code-sm text-code-sm text-primary border-b-2 border-primary pb-2">
-        Params
-      </button>
-      <button class="font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface pb-2">
-        Headers (2)
-      </button>
-      <button class="font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface pb-2">
-        Auth
-      </button>
-      <button class="font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface pb-2">
-        Body
-      </button>
-    </div>
-    <div class="flex-1 p-4 overflow-y-auto">
-      <!-- Params Table -->
-      <div
-        class="border border-outline-variant/20 rounded bg-surface-container-low overflow-hidden"
-      >
-        <div
-          class="grid grid-cols-12 gap-2 p-2 border-b border-outline-variant/20 bg-surface-variant/30 font-code-sm text-code-sm text-on-surface-variant"
-        >
-          <div class="col-span-1 text-center"></div>
-          <div class="col-span-4">Key</div>
-          <div class="col-span-4">Value</div>
-          <div class="col-span-3">Description</div>
-        </div>
-        <div
-          class="grid grid-cols-12 gap-2 p-2 border-b border-outline-variant/10 items-center font-code-sm text-code-sm"
-        >
-          <div class="col-span-1 text-center">
-            <input
-              checked=""
-              class="rounded border-outline-variant bg-surface text-primary focus:ring-primary focus:ring-offset-background"
-              type="checkbox"
-            />
-          </div>
-          <div class="col-span-4">
-            <input
-              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded text-on-surface"
-              type="text"
-              value="include_metrics"
-            />
-          </div>
-          <div class="col-span-4">
-            <input
-              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded text-on-surface"
-              type="text"
-              value="true"
-            />
-          </div>
-          <div class="col-span-3 text-on-surface-variant">
-            <input
-              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded"
-              placeholder="Description"
-              type="text"
-            />
-          </div>
-        </div>
-        <div class="grid grid-cols-12 gap-2 p-2 items-center font-code-sm text-code-sm">
-          <div class="col-span-1 text-center">
-            <input
-              class="rounded border-outline-variant bg-surface text-primary focus:ring-primary focus:ring-offset-background"
-              type="checkbox"
-            />
-          </div>
-          <div class="col-span-4">
-            <input
-              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded text-on-surface-variant"
-              placeholder="Key"
-              type="text"
-            />
-          </div>
-          <div class="col-span-4">
-            <input
-              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded text-on-surface-variant"
-              placeholder="Value"
-              type="text"
-            />
-          </div>
-          <div class="col-span-3 text-on-surface-variant">
-            <input
-              class="w-full bg-transparent border-none p-1 focus:ring-1 focus:ring-primary rounded"
-              placeholder="Description"
-              type="text"
-            />
-          </div>
-        </div>
+
+  @if (active(); as item) {
+    <div class="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div class="flex gap-4 overflow-x-auto border-b border-outline-variant/10 px-4 pt-2">
+        @for (tab of tabs(); track tab.id) {
+          <button
+            type="button"
+            class="whitespace-nowrap border-b-2 pb-2 font-code-sm text-code-sm transition-colors"
+            [class.border-primary]="activeSection() === tab.id"
+            [class.text-primary]="activeSection() === tab.id"
+            [class.border-transparent]="activeSection() !== tab.id"
+            [class.text-on-surface-variant]="activeSection() !== tab.id"
+            [class.hover:text-on-surface]="activeSection() !== tab.id"
+            (click)="selectSection(tab.id)"
+          >
+            {{ tab.label }}
+            @if (tab.count !== undefined) {
+              ({{ tab.count }})
+            }
+          </button>
+        }
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-4">
+        @switch (item.request.type) {
+          @case ('HTTP') {
+            @if (activeSection() === 'PARAMS') {
+              <div
+                class="overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low"
+              >
+                <div
+                  class="grid grid-cols-12 gap-2 border-b border-outline-variant/20 bg-surface-variant/30 p-2 font-code-sm text-code-sm text-on-surface-variant"
+                >
+                  <div class="col-span-1 text-center">On</div>
+                  <div class="col-span-4">Key</div>
+                  <div class="col-span-5">Value</div>
+                  <div class="col-span-2"></div>
+                </div>
+                @for (param of item.request.queryParams; track param.id) {
+                  <div
+                    class="grid grid-cols-12 items-center gap-2 border-b border-outline-variant/10 p-2 font-code-sm text-code-sm last:border-b-0"
+                  >
+                    <div class="col-span-1 text-center">
+                      <input
+                        type="checkbox"
+                        class="rounded border-outline-variant bg-surface text-primary"
+                        [checked]="param.enabled"
+                        (change)="setHttpParamEnabled(param.id, $any($event.target).checked)"
+                      />
+                    </div>
+                    <input
+                      class="col-span-4 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Parameter key"
+                      placeholder="Key"
+                      [value]="param.key"
+                      (input)="updateHttpParam(param.id, 'key', $any($event.target).value)"
+                    />
+                    <input
+                      class="col-span-5 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface-variant hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Parameter value"
+                      placeholder="Value"
+                      [value]="param.value"
+                      (input)="updateHttpParam(param.id, 'value', $any($event.target).value)"
+                    />
+                    <div class="col-span-2 text-right">
+                      <button
+                        type="button"
+                        class="rounded p-1 text-on-surface-variant transition-colors hover:bg-error/10 hover:text-error"
+                        aria-label="Remove parameter"
+                        (click)="removeHttpParam(param.id)"
+                      >
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="p-6 text-center font-code-sm text-code-sm text-on-surface-variant">
+                    No query parameters
+                  </div>
+                }
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-2 border-t border-outline-variant/10 px-3 py-2 font-code-sm text-code-sm text-on-surface-variant transition-colors hover:bg-surface-variant/30 hover:text-primary"
+                  (click)="addHttpParam()"
+                >
+                  <span class="material-symbols-outlined text-[16px]">add</span>
+                  Add parameter
+                </button>
+              </div>
+            }
+
+            @if (activeSection() === 'HEADERS') {
+              <div
+                class="overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low"
+              >
+                <div
+                  class="grid grid-cols-12 gap-2 border-b border-outline-variant/20 bg-surface-variant/30 p-2 font-code-sm text-code-sm text-on-surface-variant"
+                >
+                  <div class="col-span-1 text-center">On</div>
+                  <div class="col-span-4">Header</div>
+                  <div class="col-span-5">Value</div>
+                  <div class="col-span-2"></div>
+                </div>
+                @for (header of item.request.headers; track header.id) {
+                  <div
+                    class="grid grid-cols-12 items-center gap-2 border-b border-outline-variant/10 p-2 font-code-sm text-code-sm last:border-b-0"
+                  >
+                    <div class="col-span-1 text-center">
+                      <input
+                        type="checkbox"
+                        class="rounded border-outline-variant bg-surface text-primary"
+                        [checked]="header.enabled"
+                        (change)="setHeaderEnabled(header.id, $any($event.target).checked)"
+                      />
+                    </div>
+                    <input
+                      class="col-span-4 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Header key"
+                      placeholder="Header"
+                      [value]="header.key"
+                      (input)="updateHeader(header.id, 'key', $any($event.target).value)"
+                    />
+                    <input
+                      class="col-span-5 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface-variant hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Header value"
+                      placeholder="Value"
+                      [value]="header.value"
+                      (input)="updateHeader(header.id, 'value', $any($event.target).value)"
+                    />
+                    <div class="col-span-2 text-right">
+                      <button
+                        type="button"
+                        class="rounded p-1 text-on-surface-variant transition-colors hover:bg-error/10 hover:text-error"
+                        aria-label="Remove header"
+                        (click)="removeHeader(header.id)"
+                      >
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="p-6 text-center font-code-sm text-code-sm text-on-surface-variant">
+                    No headers
+                  </div>
+                }
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-2 border-t border-outline-variant/10 px-3 py-2 font-code-sm text-code-sm text-on-surface-variant transition-colors hover:bg-surface-variant/30 hover:text-primary"
+                  (click)="addHeader()"
+                >
+                  <span class="material-symbols-outlined text-[16px]">add</span>
+                  Add header
+                </button>
+              </div>
+            }
+
+            @if (activeSection() === 'AUTH') {
+              <div class="rounded border border-white/5 bg-surface-container p-4">
+                <p
+                  class="mb-3 font-label-md text-label-md uppercase tracking-wider text-on-surface-variant"
+                >
+                  Authentication
+                </p>
+                <select
+                  class="rounded border border-white/5 bg-surface-variant px-2.5 py-1 font-code-sm text-code-sm text-primary focus:border-primary/50 focus:ring-0"
+                  aria-label="Authentication type"
+                  [value]="item.request.auth?.type ?? 'NONE'"
+                  (change)="updateAuthType($any($event.target).value)"
+                >
+                  @for (type of authTypes; track type) {
+                    <option class="bg-surface-container text-on-surface" [value]="type">
+                      {{ type }}
+                    </option>
+                  }
+                </select>
+                @for (entry of item.request.auth?.config | keyvalue; track entry.key) {
+                  <div
+                    class="mt-3 grid grid-cols-[minmax(120px,0.35fr)_1fr] gap-3 border-t border-white/5 pt-3 font-code-sm text-code-sm"
+                  >
+                    <span class="text-on-surface-variant">{{ entry.key }}</span>
+                    <span class="break-all text-on-surface">{{ entry.value }}</span>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (activeSection() === 'BODY') {
+              <div class="overflow-hidden rounded border border-white/5 bg-surface-container">
+                <div
+                  class="flex items-center justify-between border-b border-white/5 bg-surface-container-high px-4 py-2"
+                >
+                  <span class="font-code-sm text-code-sm text-on-surface-variant"
+                    >Request body</span
+                  >
+                  <select
+                    class="rounded border border-white/5 bg-surface-variant px-2 py-0.5 font-code-sm text-[11px] text-primary focus:border-primary/50 focus:ring-0"
+                    aria-label="Body type"
+                    [value]="item.request.body?.type ?? 'NONE'"
+                    (change)="updateHttpBodyType($any($event.target).value)"
+                  >
+                    @for (type of bodyTypes; track type) {
+                      <option class="bg-surface-container text-on-surface" [value]="type">
+                        {{ type }}
+                      </option>
+                    }
+                  </select>
+                </div>
+                <textarea
+                  class="min-h-64 w-full resize-none border-0 bg-transparent p-4 font-code-sm text-code-sm text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
+                  aria-label="Request body"
+                  placeholder="Request body"
+                  spellcheck="false"
+                  [value]="item.request.body?.content ?? ''"
+                  [disabled]="(item.request.body?.type ?? 'NONE') === 'NONE'"
+                  (input)="updateHttpBodyContent($any($event.target).value)"
+                ></textarea>
+              </div>
+            }
+          }
+
+          @case ('GRAPHQL') {
+            @if (activeSection() === 'HEADERS') {
+              <div
+                class="overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low"
+              >
+                <div
+                  class="grid grid-cols-12 gap-2 border-b border-outline-variant/20 bg-surface-variant/30 p-2 font-code-sm text-code-sm text-on-surface-variant"
+                >
+                  <div class="col-span-1 text-center">On</div>
+                  <div class="col-span-4">Header</div>
+                  <div class="col-span-5">Value</div>
+                  <div class="col-span-2"></div>
+                </div>
+                @for (header of item.request.headers; track header.id) {
+                  <div
+                    class="grid grid-cols-12 items-center gap-2 border-b border-outline-variant/10 p-2 font-code-sm text-code-sm last:border-b-0"
+                  >
+                    <div class="col-span-1 text-center">
+                      <input
+                        type="checkbox"
+                        [checked]="header.enabled"
+                        (change)="setHeaderEnabled(header.id, $any($event.target).checked)"
+                      />
+                    </div>
+                    <input
+                      class="col-span-4 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Header key"
+                      placeholder="Header"
+                      [value]="header.key"
+                      (input)="updateHeader(header.id, 'key', $any($event.target).value)"
+                    />
+                    <input
+                      class="col-span-5 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface-variant hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Header value"
+                      placeholder="Value"
+                      [value]="header.value"
+                      (input)="updateHeader(header.id, 'value', $any($event.target).value)"
+                    />
+                    <div class="col-span-2 text-right">
+                      <button
+                        type="button"
+                        class="rounded p-1 text-on-surface-variant transition-colors hover:bg-error/10 hover:text-error"
+                        aria-label="Remove header"
+                        (click)="removeHeader(header.id)"
+                      >
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="p-6 text-center font-code-sm text-code-sm text-on-surface-variant">
+                    No headers
+                  </div>
+                }
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-2 border-t border-outline-variant/10 px-3 py-2 font-code-sm text-code-sm text-on-surface-variant transition-colors hover:bg-surface-variant/30 hover:text-primary"
+                  (click)="addHeader()"
+                >
+                  <span class="material-symbols-outlined text-[16px]">add</span>
+                  Add header
+                </button>
+              </div>
+            }
+
+            @if (activeSection() === 'AUTH') {
+              <div class="rounded border border-white/5 bg-surface-container p-4">
+                <p
+                  class="mb-3 font-label-md text-label-md uppercase tracking-wider text-on-surface-variant"
+                >
+                  Authentication
+                </p>
+                <select
+                  class="rounded border border-white/5 bg-surface-variant px-2.5 py-1 font-code-sm text-code-sm text-primary focus:border-primary/50 focus:ring-0"
+                  aria-label="Authentication type"
+                  [value]="item.request.auth?.type ?? 'NONE'"
+                  (change)="updateAuthType($any($event.target).value)"
+                >
+                  @for (type of authTypes; track type) {
+                    <option class="bg-surface-container text-on-surface" [value]="type">
+                      {{ type }}
+                    </option>
+                  }
+                </select>
+                @for (entry of item.request.auth?.config | keyvalue; track entry.key) {
+                  <div
+                    class="mt-3 grid grid-cols-[minmax(120px,0.35fr)_1fr] gap-3 border-t border-white/5 pt-3 font-code-sm text-code-sm"
+                  >
+                    <span class="text-on-surface-variant">{{ entry.key }}</span>
+                    <span class="break-all text-on-surface">{{ entry.value }}</span>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (activeSection() === 'QUERY') {
+              <div class="overflow-hidden rounded border border-white/5 bg-surface-container">
+                <div
+                  class="flex items-center justify-between border-b border-white/5 bg-surface-container-high px-4 py-2"
+                >
+                  <span class="font-code-sm text-code-sm text-on-surface-variant"
+                    >GraphQL query</span
+                  >
+                  <input
+                    class="w-48 rounded border border-white/5 bg-surface-variant/50 px-2 py-1 text-right font-code-sm text-[11px] text-primary placeholder:text-on-surface-variant focus:border-primary/50 focus:ring-0"
+                    aria-label="Operation name"
+                    placeholder="Operation name"
+                    [value]="item.request.operationName ?? ''"
+                    (input)="updateGraphQLOperationName($any($event.target).value)"
+                  />
+                </div>
+                <textarea
+                  class="min-h-72 w-full resize-none border-0 bg-transparent p-4 font-code-sm text-code-sm text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0"
+                  aria-label="GraphQL query"
+                  placeholder="query Example { ... }"
+                  spellcheck="false"
+                  [value]="item.request.query"
+                  (input)="updateGraphQLQuery($any($event.target).value)"
+                ></textarea>
+              </div>
+            }
+
+            @if (activeSection() === 'VARIABLES') {
+              <div class="overflow-hidden rounded border border-white/5 bg-surface-container">
+                <div
+                  class="border-b border-white/5 bg-surface-container-high px-4 py-2 font-code-sm text-code-sm text-on-surface-variant"
+                >
+                  Variables
+                </div>
+                <textarea
+                  class="min-h-64 w-full resize-none border-0 bg-transparent p-4 font-code-sm text-code-sm text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0"
+                  aria-label="GraphQL variables"
+                  placeholder="{ }"
+                  spellcheck="false"
+                  [value]="item.request.variables ?? ''"
+                  (input)="updateGraphQLVariables($any($event.target).value)"
+                ></textarea>
+              </div>
+            }
+          }
+
+          @case ('WEBSOCKET') {
+            @if (activeSection() === 'HEADERS') {
+              <div
+                class="overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low"
+              >
+                <div
+                  class="grid grid-cols-12 gap-2 border-b border-outline-variant/20 bg-surface-variant/30 p-2 font-code-sm text-code-sm text-on-surface-variant"
+                >
+                  <div class="col-span-1 text-center">On</div>
+                  <div class="col-span-4">Header</div>
+                  <div class="col-span-5">Value</div>
+                  <div class="col-span-2"></div>
+                </div>
+                @for (header of item.request.headers; track header.id) {
+                  <div
+                    class="grid grid-cols-12 items-center gap-2 border-b border-outline-variant/10 p-2 font-code-sm text-code-sm last:border-b-0"
+                  >
+                    <div class="col-span-1 text-center">
+                      <input
+                        type="checkbox"
+                        [checked]="header.enabled"
+                        (change)="setHeaderEnabled(header.id, $any($event.target).checked)"
+                      />
+                    </div>
+                    <input
+                      class="col-span-4 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Header key"
+                      placeholder="Header"
+                      [value]="header.key"
+                      (input)="updateHeader(header.id, 'key', $any($event.target).value)"
+                    />
+                    <input
+                      class="col-span-5 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface-variant hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Header value"
+                      placeholder="Value"
+                      [value]="header.value"
+                      (input)="updateHeader(header.id, 'value', $any($event.target).value)"
+                    />
+                    <div class="col-span-2 text-right">
+                      <button
+                        type="button"
+                        class="rounded p-1 text-on-surface-variant transition-colors hover:bg-error/10 hover:text-error"
+                        aria-label="Remove header"
+                        (click)="removeHeader(header.id)"
+                      >
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="p-6 text-center font-code-sm text-code-sm text-on-surface-variant">
+                    No headers
+                  </div>
+                }
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-2 border-t border-outline-variant/10 px-3 py-2 font-code-sm text-code-sm text-on-surface-variant transition-colors hover:bg-surface-variant/30 hover:text-primary"
+                  (click)="addHeader()"
+                >
+                  <span class="material-symbols-outlined text-[16px]">add</span>
+                  Add header
+                </button>
+              </div>
+            }
+
+            @if (activeSection() === 'AUTH') {
+              <div class="rounded border border-white/5 bg-surface-container p-4">
+                <p
+                  class="mb-3 font-label-md text-label-md uppercase tracking-wider text-on-surface-variant"
+                >
+                  Authentication
+                </p>
+                <select
+                  class="rounded border border-white/5 bg-surface-variant px-2.5 py-1 font-code-sm text-code-sm text-primary focus:border-primary/50 focus:ring-0"
+                  aria-label="Authentication type"
+                  [value]="item.request.auth?.type ?? 'NONE'"
+                  (change)="updateAuthType($any($event.target).value)"
+                >
+                  @for (type of authTypes; track type) {
+                    <option class="bg-surface-container text-on-surface" [value]="type">
+                      {{ type }}
+                    </option>
+                  }
+                </select>
+                @for (entry of item.request.auth?.config | keyvalue; track entry.key) {
+                  <div
+                    class="mt-3 grid grid-cols-[minmax(120px,0.35fr)_1fr] gap-3 border-t border-white/5 pt-3 font-code-sm text-code-sm"
+                  >
+                    <span class="text-on-surface-variant">{{ entry.key }}</span>
+                    <span class="break-all text-on-surface">{{ entry.value }}</span>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (activeSection() === 'MESSAGES') {
+              <div class="space-y-4">
+                <div
+                  class="flex flex-wrap items-center justify-between gap-3 rounded border border-white/5 bg-surface-container p-3"
+                >
+                  <div class="flex items-center gap-2 font-code-sm text-code-sm">
+                    <span
+                      class="h-2 w-2 rounded-full"
+                      [class.bg-tertiary]="webSocketConnection().status === 'OPEN'"
+                      [class.bg-primary]="webSocketConnection().status === 'CONNECTING'"
+                      [class.animate-pulse]="webSocketConnection().status === 'CONNECTING'"
+                      [class.bg-error]="webSocketConnection().status === 'ERROR'"
+                      [class.bg-on-surface-variant]="
+                        webSocketConnection().status !== 'OPEN' &&
+                        webSocketConnection().status !== 'CONNECTING' &&
+                        webSocketConnection().status !== 'ERROR'
+                      "
+                    ></span>
+                    <span class="text-on-surface">{{ webSocketConnection().status }}</span>
+                    @if (webSocketConnection().closeCode) {
+                      <span class="text-on-surface-variant"
+                        >{{ webSocketConnection().closeCode }}
+                        {{ webSocketConnection().closeReason }}</span
+                      >
+                    }
+                  </div>
+                  <button
+                    type="button"
+                    class="font-code-sm text-[11px] text-on-surface-variant transition-colors hover:text-primary"
+                    (click)="clearWebSocketMessages()"
+                  >
+                    Clear history
+                  </button>
+                </div>
+
+                <div
+                  class="flex gap-2 rounded border border-secondary/15 bg-secondary/5 p-3 font-code-sm text-[11px] text-on-surface-variant"
+                >
+                  <span class="material-symbols-outlined text-[16px] text-secondary">info</span>
+                  Browser WebSockets cannot send custom headers. Authentication must use cookies,
+                  query parameters, or subprotocols.
+                </div>
+
+                @if (webSocketConnection().error) {
+                  <div
+                    class="rounded border border-error/20 bg-error/5 p-3 font-code-sm text-code-sm text-error"
+                  >
+                    {{ webSocketConnection().error }}
+                  </div>
+                }
+
+                @if (item.request.subprotocols?.length) {
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="font-code-sm text-code-sm text-on-surface-variant"
+                      >Subprotocols</span
+                    >
+                    @for (subprotocol of item.request.subprotocols; track subprotocol) {
+                      <span
+                        class="rounded border border-white/5 bg-surface-variant px-2.5 py-1 font-code-sm text-[11px] text-secondary"
+                        >{{ subprotocol }}</span
+                      >
+                    }
+                  </div>
+                }
+
+                <div
+                  class="min-h-48 overflow-hidden rounded border border-white/5 bg-surface-container-low"
+                >
+                  <div
+                    class="flex items-center justify-between border-b border-white/5 bg-surface-container-high px-3 py-2"
+                  >
+                    <span class="font-code-sm text-code-sm text-on-surface-variant"
+                      >Message history</span
+                    >
+                    <span class="font-code-sm text-[11px] text-on-surface-variant"
+                      >{{ webSocketConnection().messages.length }} events</span
+                    >
+                  </div>
+                  @for (message of webSocketConnection().messages; track message.id) {
+                    <div
+                      class="grid grid-cols-[76px_1fr_auto] gap-3 border-b border-white/5 px-3 py-2 font-code-sm text-code-sm last:border-b-0"
+                    >
+                      <span
+                        [class.text-primary]="message.direction === 'SENT'"
+                        [class.text-secondary]="message.direction === 'RECEIVED'"
+                        >{{ message.direction }}</span
+                      >
+                      <pre class="whitespace-pre-wrap break-all text-on-surface">{{
+                        message.payload
+                      }}</pre>
+                      <span class="text-[10px] text-on-surface-variant">{{
+                        formatWebSocketTime(message.timestamp)
+                      }}</span>
+                    </div>
+                  } @empty {
+                    <div
+                      class="flex min-h-36 items-center justify-center p-6 text-center font-code-sm text-code-sm text-on-surface-variant"
+                    >
+                      Connect and send a message to start the session log.
+                    </div>
+                  }
+                </div>
+
+                <div class="overflow-hidden rounded border border-white/5 bg-surface-container">
+                  <textarea
+                    class="min-h-24 w-full resize-y border-0 bg-transparent p-3 font-code-sm text-code-sm text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-50"
+                    aria-label="WebSocket message"
+                    placeholder="Message payload"
+                    spellcheck="false"
+                    [value]="outgoingWebSocketMessage()"
+                    [disabled]="webSocketConnection().status !== 'OPEN'"
+                    (input)="outgoingWebSocketMessage.set($any($event.target).value)"
+                  ></textarea>
+                  <div
+                    class="flex items-center justify-between border-t border-white/5 bg-surface-container-high px-3 py-2"
+                  >
+                    <span class="font-code-sm text-[11px] text-on-surface-variant">TEXT</span>
+                    <button
+                      type="button"
+                      class="flex items-center gap-2 rounded bg-primary px-3 py-1 font-label-md text-[11px] text-background transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-40"
+                      [disabled]="
+                        webSocketConnection().status !== 'OPEN' || !outgoingWebSocketMessage()
+                      "
+                      (click)="sendWebSocketMessage()"
+                    >
+                      Send message
+                      <span class="material-symbols-outlined text-[14px]">send</span>
+                    </button>
+                  </div>
+                </div>
+
+                @if (item.request.messages.length) {
+                  <div class="space-y-2">
+                    <p
+                      class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant"
+                    >
+                      Saved messages
+                    </p>
+                    @for (message of item.request.messages; track message.id) {
+                      <button
+                        type="button"
+                        class="flex w-full items-center justify-between rounded border border-white/5 bg-surface-container p-3 text-left transition-colors hover:border-primary/30"
+                        (click)="outgoingWebSocketMessage.set(message.payload)"
+                      >
+                        <span class="font-code-sm text-code-sm text-on-surface">{{
+                          message.name || 'Message'
+                        }}</span>
+                        <span class="font-code-sm text-[11px] text-secondary">{{
+                          message.type
+                        }}</span>
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          }
+
+          @case ('GRPC') {
+            @if (activeSection() === 'METADATA') {
+              <div
+                class="overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low"
+              >
+                <div
+                  class="grid grid-cols-12 gap-2 border-b border-outline-variant/20 bg-surface-variant/30 p-2 font-code-sm text-code-sm text-on-surface-variant"
+                >
+                  <span class="col-span-1 text-center">On</span>
+                  <span class="col-span-4">Metadata</span>
+                  <span class="col-span-5">Value</span>
+                  <span class="col-span-2"></span>
+                </div>
+                @for (header of item.request.metadata; track header.id) {
+                  <div
+                    class="grid grid-cols-12 items-center gap-2 border-b border-outline-variant/10 p-2 font-code-sm text-code-sm last:border-b-0"
+                  >
+                    <div class="col-span-1 text-center">
+                      <input
+                        type="checkbox"
+                        [checked]="header.enabled"
+                        (change)="setHeaderEnabled(header.id, $any($event.target).checked)"
+                      />
+                    </div>
+                    <input
+                      class="col-span-4 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Metadata key"
+                      placeholder="Metadata"
+                      [value]="header.key"
+                      (input)="updateHeader(header.id, 'key', $any($event.target).value)"
+                    />
+                    <input
+                      class="col-span-5 min-w-0 rounded border border-transparent bg-transparent p-1 text-on-surface-variant hover:border-white/5 focus:border-primary/50 focus:ring-0"
+                      aria-label="Metadata value"
+                      placeholder="Value"
+                      [value]="header.value"
+                      (input)="updateHeader(header.id, 'value', $any($event.target).value)"
+                    />
+                    <div class="col-span-2 text-right">
+                      <button
+                        type="button"
+                        class="rounded p-1 text-on-surface-variant transition-colors hover:bg-error/10 hover:text-error"
+                        aria-label="Remove metadata"
+                        (click)="removeHeader(header.id)"
+                      >
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                } @empty {
+                  <div class="p-6 text-center font-code-sm text-code-sm text-on-surface-variant">
+                    No metadata
+                  </div>
+                }
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-2 border-t border-outline-variant/10 px-3 py-2 font-code-sm text-code-sm text-on-surface-variant transition-colors hover:bg-surface-variant/30 hover:text-primary"
+                  (click)="addHeader()"
+                >
+                  <span class="material-symbols-outlined text-[16px]">add</span>
+                  Add metadata
+                </button>
+              </div>
+            }
+
+            @if (activeSection() === 'PROTO') {
+              <div class="overflow-hidden rounded border border-white/5 bg-surface-container">
+                <div
+                  class="flex items-center justify-between border-b border-white/5 bg-surface-container-high px-4 py-2"
+                >
+                  <span class="font-code-sm text-code-sm text-on-surface-variant"
+                    >Protocol definition</span
+                  >
+                  <select
+                    class="rounded border border-white/5 bg-surface-variant px-2 py-0.5 font-code-sm text-[11px] text-tertiary focus:border-primary/50 focus:ring-0"
+                    aria-label="Proto source"
+                    [value]="item.request.proto?.source ?? 'INLINE'"
+                    (change)="updateProtoSource($any($event.target).value)"
+                  >
+                    @for (source of protoSources; track source) {
+                      <option class="bg-surface-container text-on-surface" [value]="source">
+                        {{ source }}
+                      </option>
+                    }
+                  </select>
+                </div>
+                <textarea
+                  class="min-h-72 w-full resize-y border-0 bg-transparent p-4 font-code-sm text-code-sm text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0"
+                  aria-label="Proto definition"
+                  [placeholder]="
+                    (item.request.proto?.source ?? 'INLINE') === 'URL'
+                      ? 'https://example.com/service.proto'
+                      : (item.request.proto?.source ?? 'INLINE') === 'FILE'
+                        ? '/path/to/service.proto'
+                        : 'syntax = &quot;proto3&quot;;'
+                  "
+                  spellcheck="false"
+                  [value]="item.request.proto?.content ?? ''"
+                  (input)="updateProtoContent($any($event.target).value)"
+                ></textarea>
+              </div>
+            }
+
+            @if (activeSection() === 'BODY') {
+              <div class="overflow-hidden rounded border border-white/5 bg-surface-container">
+                <div
+                  class="grid grid-cols-2 gap-3 border-b border-white/5 bg-surface-container-low p-3"
+                >
+                  <label class="space-y-1">
+                    <span class="font-code-sm text-[11px] text-on-surface-variant">Service</span>
+                    <input
+                      class="w-full rounded border border-white/5 bg-surface-container px-3 py-2 font-code-sm text-code-sm text-on-surface focus:border-primary/50 focus:ring-0"
+                      aria-label="gRPC service"
+                      placeholder="UserService"
+                      [value]="item.request.service"
+                      (input)="updateGrpcService($any($event.target).value)"
+                    />
+                  </label>
+                  <label class="space-y-1">
+                    <span class="font-code-sm text-[11px] text-on-surface-variant">Method</span>
+                    <input
+                      class="w-full rounded border border-white/5 bg-surface-container px-3 py-2 font-code-sm text-code-sm text-on-surface focus:border-primary/50 focus:ring-0"
+                      aria-label="gRPC method"
+                      placeholder="GetUser"
+                      [value]="item.request.method"
+                      (input)="updateGrpcMethod($any($event.target).value)"
+                    />
+                  </label>
+                </div>
+                <div
+                  class="flex items-center justify-between border-b border-white/5 bg-surface-container-high px-4 py-2"
+                >
+                  <span class="font-code-sm text-code-sm text-on-surface-variant"
+                    >Message body</span
+                  >
+                  <select
+                    class="rounded border border-white/5 bg-surface-variant px-2 py-0.5 font-code-sm text-[11px] text-tertiary focus:border-primary/50 focus:ring-0"
+                    aria-label="gRPC body type"
+                    [value]="item.request.body.type"
+                    (change)="updateGrpcBodyType($any($event.target).value)"
+                  >
+                    @for (type of grpcBodyTypes; track type) {
+                      <option class="bg-surface-container text-on-surface" [value]="type">
+                        {{ type }}
+                      </option>
+                    }
+                  </select>
+                </div>
+                <textarea
+                  class="min-h-64 w-full resize-y border-0 bg-transparent p-4 font-code-sm text-code-sm text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0"
+                  aria-label="gRPC body"
+                  placeholder="{ }"
+                  spellcheck="false"
+                  [value]="item.request.body.payload"
+                  (input)="updateGrpcBodyPayload($any($event.target).value)"
+                ></textarea>
+              </div>
+            }
+          }
+        }
       </div>
     </div>
-  </div>
+  } @else {
+    <div class="flex flex-1 items-center justify-center p-8">
+      <div class="max-w-sm text-center">
+        <span
+          class="material-symbols-outlined mb-3 text-4xl text-on-surface-variant/40"
+          data-icon="send"
+          >send</span
+        >
+        <h2 class="font-headline-md text-headline-md text-on-surface">Select a request</h2>
+        <p class="mt-2 font-body-md text-body-md text-on-surface-variant">
+          Choose an HTTP, GraphQL, WebSocket, or gRPC request from the collection explorer.
+        </p>
+      </div>
+    </div>
+  }
 </main>

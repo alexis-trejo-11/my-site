@@ -1,4 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Header } from '../../shared/header/header';
 import { ProjectExplorer } from './project-explorer/project-explorer';
 import { ProjectMetadata } from './project-metadata/project-metadata';
@@ -24,6 +25,8 @@ import { ProjectSectionKey } from './project-explorer/project-folder/project-fol
 })
 export class Projects implements OnInit {
   projectService = inject(ProjectsService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   activeProject = signal<ProjectModel | null>(null);
   activeSection = signal<ProjectSectionKey | null>(null);
   projects = signal<ProjectModel[]>([]);
@@ -50,12 +53,14 @@ export class Projects implements OnInit {
     const project = this.findBySlug(this.projects(), slug);
     this.activeProject.set(project);
     this.activeSection.set(this.defaultSection(project));
+    this.router.navigate(['/projects', slug], { replaceUrl: true });
   }
 
   selectSection(event: { slug: string; section: ProjectSectionKey }) {
     const project = this.findBySlug(this.projects(), event.slug);
     this.activeProject.set(project);
     this.activeSection.set(event.section);
+    this.router.navigate(['/projects', event.slug, event.section], { replaceUrl: true });
   }
 
   toggleExplorer(): void {
@@ -69,7 +74,13 @@ export class Projects implements OnInit {
   ngOnInit() {
     this.projectService.getProjects().subscribe((projects) => {
       this.projects.set(projects);
-      if (!this.activeProject() && projects.length > 0) {
+      const slug = this.route.snapshot.paramMap.get('slug');
+      const section = this.route.snapshot.paramMap.get('section') as ProjectSectionKey | null;
+      if (slug) {
+        const project = this.findBySlug(projects, slug);
+        this.activeProject.set(project);
+        this.activeSection.set(section ?? this.defaultSection(project));
+      } else if (!this.activeProject() && projects.length > 0) {
         this.selectProject(projects[0].slug);
       }
     });

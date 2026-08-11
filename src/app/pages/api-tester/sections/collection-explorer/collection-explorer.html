@@ -2,6 +2,14 @@
   class="flex h-full min-h-0 w-full flex-col border-r border-outline-variant/20 bg-surface-container-lowest"
 >
   <div class="p-3 border-b border-outline-variant/10">
+    @if (store.isDevelopmentMode) {
+      <div
+        class="mb-2 flex items-center gap-2 font-code-sm text-[10px] uppercase tracking-wider text-primary"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-primary"></span>
+        Dev editor
+      </div>
+    }
     <div
       class="flex items-center bg-surface-variant/40 rounded px-2 py-1 border border-outline-variant/20 focus-within:border-primary/50 transition-colors"
     >
@@ -26,6 +34,7 @@
       [selectedId]="store.activeRequestId()"
       [forceExpand]="forceExpand()"
       [leafTemplate]="requestLeaf"
+      [folderTemplate]="folderNode"
       (toggleId)="onToggleId($event)"
       (selectLeaf)="onSelectLeaf($event)"
     />
@@ -36,6 +45,9 @@
     <span class="font-code-sm text-code-sm text-on-surface-variant"
       >Env: <span class="text-primary">Staging</span></span
     >
+    @if (exportMessage()) {
+      <span class="font-code-sm text-[10px] text-tertiary">{{ exportMessage() }}</span>
+    }
     <span
       class="material-symbols-outlined text-on-surface-variant text-sm cursor-pointer hover:text-primary"
       data-icon="settings"
@@ -44,17 +56,207 @@
   </div>
 </aside>
 
-<ng-template
-  #requestLeaf
-  let-node
-  let-depth="depth"
-  let-selected="selected"
-  let-select="select"
->
+<ng-template #folderNode let-node let-depth="depth" let-expanded="expanded" let-toggle="toggle">
+  <div
+    class="group flex w-full items-center rounded text-on-surface transition-colors hover:bg-surface-variant/30"
+    [style.padding-left.px]="8 + depth * 12"
+  >
+    <button
+      type="button"
+      class="flex min-w-0 flex-1 items-center gap-2 py-1 pr-1 text-left"
+      (click)="toggle()"
+    >
+      <span
+        class="material-symbols-outlined text-sm text-on-surface-variant transition-colors group-hover:text-primary"
+      >
+        {{ expanded ? 'folder_open' : 'folder' }}
+      </span>
+      <span class="truncate font-code-sm text-code-sm">{{ node.name }}</span>
+    </button>
+    @if (canCreate(node.id) || canRename(node.id) || canExport(node.id) || isSandbox(node.id)) {
+      <div class="mr-1 hidden shrink-0 items-center group-hover:flex">
+        @if (canCreate(node.id)) {
+          <button
+            type="button"
+            class="rounded p-1 text-on-surface-variant hover:bg-surface-variant hover:text-primary"
+            aria-label="Add request"
+            title="Add request"
+            (click)="store.openEditor('REQUEST', node.id)"
+          >
+            <span class="material-symbols-outlined text-[14px]">add</span>
+          </button>
+          <button
+            type="button"
+            class="rounded p-1 text-on-surface-variant hover:bg-surface-variant hover:text-secondary"
+            aria-label="Add folder"
+            title="Add folder"
+            (click)="store.openEditor('FOLDER', node.id)"
+          >
+            <span class="material-symbols-outlined text-[14px]">create_new_folder</span>
+          </button>
+        }
+        @if (canRename(node.id)) {
+          <button
+            type="button"
+            class="rounded p-1 text-on-surface-variant hover:bg-surface-variant hover:text-primary"
+            aria-label="Rename folder"
+            title="Rename"
+            (click)="store.openEditor('RENAME', node.id)"
+          >
+            <span class="material-symbols-outlined text-[14px]">edit</span>
+          </button>
+        }
+        @if (canExport(node.id)) {
+          <button
+            type="button"
+            class="rounded p-1 text-on-surface-variant hover:bg-surface-variant hover:text-primary"
+            aria-label="Copy collection JSON"
+            title="Copy JSON"
+            (click)="copyCollection(node.id)"
+          >
+            <span class="material-symbols-outlined text-[14px]">content_copy</span>
+          </button>
+          <button
+            type="button"
+            class="rounded p-1 text-on-surface-variant hover:bg-surface-variant hover:text-secondary"
+            aria-label="Download collection JSON"
+            title="Download JSON"
+            (click)="downloadCollection(node.id)"
+          >
+            <span class="material-symbols-outlined text-[14px]">download</span>
+          </button>
+        }
+        @if (isSandbox(node.id)) {
+          <button
+            type="button"
+            class="rounded p-1 text-on-surface-variant hover:bg-error/10 hover:text-error"
+            aria-label="Reset Sandbox"
+            title="Reset Sandbox"
+            (click)="resetSandbox()"
+          >
+            <span class="material-symbols-outlined text-[14px]">restart_alt</span>
+          </button>
+        }
+        @if (canDelete(node.id)) {
+          <button
+            type="button"
+            class="rounded p-1 text-on-surface-variant hover:bg-error/10 hover:text-error"
+            aria-label="Delete folder"
+            title="Delete"
+            (click)="deleteNode(node.id)"
+          >
+            <span class="material-symbols-outlined text-[14px]">delete</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #requestLeaf let-node let-depth="depth" let-selected="selected" let-select="select">
   <app-request-item
     [request]="node.data"
     [depth]="depth"
     [selected]="selected"
+    [manageable]="canRename(node.id) || canDelete(node.id)"
     (select)="select()"
+    (rename)="store.openEditor('RENAME', node.id)"
+    (remove)="deleteNode(node.id)"
   />
 </ng-template>
+
+@if (store.editorAction(); as action) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-surface/75 p-4 backdrop-blur-sm"
+    (click)="store.closeEditor()"
+  >
+    <form
+      class="w-full max-w-md rounded-lg border border-white/10 bg-surface-container shadow-2xl"
+      (click)="$event.stopPropagation()"
+      (submit)="$event.preventDefault(); submitEditor()"
+    >
+      <div
+        class="flex items-center justify-between border-b border-white/5 bg-surface-container-high px-4 py-3"
+      >
+        <h2 class="font-label-md text-label-md text-on-surface">
+          @switch (action.mode) {
+            @case ('REQUEST') {
+              New request
+            }
+            @case ('FOLDER') {
+              New folder
+            }
+            @case ('RENAME') {
+              Rename item
+            }
+          }
+        </h2>
+        <button
+          type="button"
+          class="rounded p-1 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface"
+          aria-label="Close editor"
+          (click)="store.closeEditor()"
+        >
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+      <div class="space-y-4 p-4">
+        @if (action.mode !== 'RENAME') {
+          <label class="block space-y-1">
+            <span class="font-code-sm text-[11px] text-on-surface-variant">Destination</span>
+            <select
+              class="w-full rounded border border-white/10 bg-surface-container-low px-3 py-2 font-code-sm text-code-sm text-on-surface focus:border-primary/50 focus:ring-0"
+              name="editor-target"
+              [value]="editorTargetId()"
+              (change)="editorTargetId.set($any($event.target).value)"
+            >
+              @for (target of editorTargets(); track target.id) {
+                <option [value]="target.id">{{ target.label }}</option>
+              }
+            </select>
+          </label>
+        }
+        <label class="block space-y-1">
+          <span class="font-code-sm text-[11px] text-on-surface-variant">Name</span>
+          <input
+            class="w-full rounded border border-white/10 bg-surface-container-low px-3 py-2 font-code-sm text-code-sm text-on-surface focus:border-primary/50 focus:ring-0"
+            name="editor-name"
+            [value]="editorName()"
+            (input)="editorName.set($any($event.target).value)"
+          />
+        </label>
+        @if (action.mode === 'REQUEST') {
+          <label class="block space-y-1">
+            <span class="font-code-sm text-[11px] text-on-surface-variant">Protocol</span>
+            <select
+              class="w-full rounded border border-white/10 bg-surface-container-low px-3 py-2 font-code-sm text-code-sm text-on-surface focus:border-primary/50 focus:ring-0"
+              name="editor-protocol"
+              [value]="editorProtocol()"
+              (change)="editorProtocol.set($any($event.target).value)"
+            >
+              @for (protocol of requestProtocols; track protocol) {
+                <option [value]="protocol">{{ protocol }}</option>
+              }
+            </select>
+          </label>
+        }
+      </div>
+      <div class="flex justify-end gap-2 border-t border-white/5 px-4 py-3">
+        <button
+          type="button"
+          class="rounded border border-white/10 px-3 py-1.5 font-code-sm text-code-sm text-on-surface-variant hover:text-on-surface"
+          (click)="store.closeEditor()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="rounded bg-primary px-4 py-1.5 font-label-md text-label-md text-background hover:bg-primary-container disabled:opacity-40"
+          [disabled]="!editorName().trim()"
+        >
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+}

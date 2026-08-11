@@ -1,8 +1,4 @@
-import {
-  CollectionItem,
-  CollectionModel,
-  CollectionRequestItem,
-} from '../../api-tester.model';
+import { CollectionItem, CollectionModel, CollectionRequestItem } from '../../api-tester.model';
 import { ExplorerTreeNode } from '../../../../shared/explorer-tree';
 
 export function collectionsToTreeNodes(
@@ -16,9 +12,7 @@ export function collectionsToTreeNodes(
   }));
 }
 
-function itemsToTreeNodes(
-  items: CollectionItem[],
-): ExplorerTreeNode<CollectionRequestItem>[] {
+function itemsToTreeNodes(items: CollectionItem[]): ExplorerTreeNode<CollectionRequestItem>[] {
   return items.map((item) => {
     if (item.type === 'FOLDER') {
       return {

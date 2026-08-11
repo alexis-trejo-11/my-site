@@ -4,8 +4,23 @@ export interface CollectionModel {
   id: string;
   name: string;
   description?: string;
+  kind: 'BUILT_IN' | 'SANDBOX';
+  persistence: 'MEMORY' | 'LOCAL_STORAGE';
   variables: EnvironmentVariable[];
   items: CollectionItem[];
+}
+
+export type RequestProtocol = RequestDefinition['type'];
+
+export interface CreateRequestInput {
+  parentId: string;
+  name: string;
+  protocol: RequestProtocol;
+}
+
+export interface CreateFolderInput {
+  parentId: string;
+  name: string;
 }
 
 export type CollectionItem = CollectionRequestItem | FolderItem;
@@ -73,6 +88,38 @@ export interface HttpRequest {
   body?: HttpBody;
 }
 
+export interface HttpExecutionResult {
+  protocol: 'HTTP';
+  requestUrl: string;
+  status: number;
+  statusText: string;
+  ok: boolean;
+  headers: Array<{ key: string; value: string }>;
+  body: string;
+  contentType: string;
+  durationMs: number;
+  sizeBytes: number;
+}
+
+export interface GraphQLExecutionError {
+  message: string;
+  path?: Array<string | number>;
+  extensions?: Record<string, unknown>;
+}
+
+export interface GraphQLExecutionResult extends Omit<HttpExecutionResult, 'protocol'> {
+  protocol: 'GRAPHQL';
+  graphQLErrors: GraphQLExecutionError[];
+}
+
+export type RequestExecutionResult = HttpExecutionResult | GraphQLExecutionResult;
+
+export type RequestExecutionState =
+  | { status: 'IDLE' }
+  | { status: 'LOADING' }
+  | { status: 'SUCCESS'; response: RequestExecutionResult }
+  | { status: 'ERROR'; error: string };
+
 export interface GraphQLRequest {
   type: 'GRAPHQL';
   url: string;
@@ -114,9 +161,27 @@ export interface WebSocketRequest {
   messages: WebSocketMessage[];
 }
 
-interface WebSocketMessage {
+export interface WebSocketMessage {
   id: string;
   type: 'TEXT' | 'BINARY';
   payload: string;
   name?: string;
+}
+
+export type WebSocketConnectionStatus = 'IDLE' | 'CONNECTING' | 'OPEN' | 'CLOSED' | 'ERROR';
+
+export interface WebSocketLogEntry {
+  id: string;
+  direction: 'SENT' | 'RECEIVED';
+  type: 'TEXT' | 'BINARY';
+  payload: string;
+  timestamp: number;
+}
+
+export interface WebSocketConnectionState {
+  status: WebSocketConnectionStatus;
+  messages: WebSocketLogEntry[];
+  error?: string;
+  closeCode?: number;
+  closeReason?: string;
 }

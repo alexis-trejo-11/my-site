@@ -16,7 +16,19 @@ export const routes: Routes = [
     component: Projects,
   },
   {
+    path: 'projects/:slug',
+    component: Projects,
+  },
+  {
+    path: 'projects/:slug/:section',
+    component: Projects,
+  },
+  {
     path: 'skills',
+    component: Skills,
+  },
+  {
+    path: 'skills/:id',
     component: Skills,
   },
   {
@@ -28,7 +40,15 @@ export const routes: Routes = [
     component: ApiTester,
   },
   {
+    path: 'api-tester/:id',
+    component: ApiTester,
+  },
+  {
     path: 'notes',
+    component: Notes,
+  },
+  {
+    path: 'notes/:id',
     component: Notes,
   },
 ];

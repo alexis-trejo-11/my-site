@@ -1,6 +1,7 @@
 import { Component, TemplateRef, input, output } from '@angular/core';
 import { ExplorerTreeNodeComponent } from './explorer-tree-node';
 import {
+  ExplorerFolderTemplateContext,
   ExplorerLeafTemplateContext,
   ExplorerTreeNode,
 } from './explorer-tree.model';
@@ -20,8 +21,8 @@ export class ExplorerTree {
   expandedIds = input<ReadonlySet<string>>(new Set());
   selectedId = input<string | null>(null);
   forceExpand = input(false);
-  leafTemplate =
-    input<TemplateRef<ExplorerLeafTemplateContext> | null>(null);
+  leafTemplate = input<TemplateRef<ExplorerLeafTemplateContext> | null>(null);
+  folderTemplate = input<TemplateRef<ExplorerFolderTemplateContext> | null>(null);
 
   toggleId = output<string>();
   selectLeaf = output<string>();

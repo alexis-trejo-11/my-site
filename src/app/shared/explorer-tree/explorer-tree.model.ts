@@ -1,6 +1,4 @@
-export type ExplorerTreeNode<TLeaf = unknown> =
-  | ExplorerFolderNode<TLeaf>
-  | ExplorerLeafNode<TLeaf>;
+export type ExplorerTreeNode<TLeaf = unknown> = ExplorerFolderNode<TLeaf> | ExplorerLeafNode<TLeaf>;
 
 export interface ExplorerFolderNode<TLeaf = unknown> {
   type: 'folder';
@@ -21,4 +19,11 @@ export interface ExplorerLeafTemplateContext<TLeaf = unknown> {
   depth: number;
   selected: boolean;
   select: () => void;
+}
+
+export interface ExplorerFolderTemplateContext<TLeaf = unknown> {
+  $implicit: ExplorerFolderNode<TLeaf>;
+  depth: number;
+  expanded: boolean;
+  toggle: () => void;
 }
