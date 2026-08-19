@@ -9,6 +9,7 @@ import { MARKED_EXTENSIONS, provideMarkdown } from 'ngx-markdown';
 import { getSingletonHighlighter, type Highlighter } from 'shiki';
 
 import { routes } from './app.routes';
+import { wikiLinkExtension } from './pages/notes/wiki-links';
 
 const SHIKI_LANGS = [
   'bash',
@@ -74,6 +75,11 @@ export const appConfig: ApplicationConfig = {
         {
           provide: MARKED_EXTENSIONS,
           useValue: shikiCodeExtension,
+          multi: true,
+        },
+        {
+          provide: MARKED_EXTENSIONS,
+          useValue: wikiLinkExtension,
           multi: true,
         },
       ],
